@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C'était Quand ?</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        #game, #results { display: none; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div id="setup">
+        <h1>Entrez les noms des joueurs de la partie</h1>
+        <form id="playerForm">
+            <input type="text" placeholder="Nom du joueur" id="playerInput">
+            <button type="button" onclick="addPlayer()">Ajouter</button>
+        </form>
+        <ul id="playerList"></ul> <!-- L'affichage de la liste n'est pas bonne -->
+        <button onclick="startGame()">Lancer la partie</button>
+    </div>
+
+    <div id="game">
+        <h2 id="question"></h2>
+        <div id="answers"></div>
+        <button onclick="validateAnswers()">Valider</button>
+    </div>
+
+    <div id="results">
+        <h2 id="roundResult"></h2>
+        <p id="explanation"></p>
+        <table border="1" id="currentScores"></table>
+        <button onclick="nextRound()">Suivant</button>
+    </div>
+
+    <div id="endGame" class="hidden">
+        <h1>Partie terminée !</h1>
+        <h2 id="winner"></h2>
+        <table border="1" id="finalScores"></table>
+    </div>
+
+    <script>
+        let players = [];
+        let scores = {};
+        let questions = [
+            { invention: "Imprimerie", year: 1440, explanation: "Inventée par Gutenberg." },
+            { invention: "Téléphone", year: 1876, explanation: "Alexander Graham Bell en est l'inventeur." },
+            { invention: "Internet", year: 1969, explanation: "ARPANET, ancêtre d'Internet, a vu le jour en 1969." }
+        ];
+        let currentQuestionIndex = 0;
+
+        function addPlayer() {
+            let playerInput = document.getElementById("playerInput").value.trim();
+            if (playerInput && !players.includes(playerInput)) {
+                players.push(playerInput);
+                scores[playerInput] = 0;
+                document.getElementById("playerList").innerHTML += `<li>${playerInput}</li>`;
+                document.getElementById("playerInput").value = "";
+            }
+        }
+
+        function startGame() {
+            if (players.length < 2) {
+                alert("Ajoutez au moins 2 joueurs.");
+                return;
+            }
+            document.getElementById("setup").style.display = "none";
+            document.getElementById("game").style.display = "block";
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            currentQuestionIndex = Math.floor(Math.random() * questions.length);
+            let question = questions[currentQuestionIndex];
+            document.getElementById("question").innerText = `Quand a été inventé ${question.invention} ?`;
+            let answersDiv = document.getElementById("answers");
+            answersDiv.innerHTML = "";
+            players.forEach(player => {
+                answersDiv.innerHTML += `<p>${player} : <input type='number' id='answer-${player}'></p>`;
+            });
+        }
+
+        function validateAnswers() {
+            let question = questions[currentQuestionIndex];
+            let closestPlayer = [];
+            let minDiff = Infinity;
+            let perfectWinner = [];
+            
+            players.forEach(player => {
+                let answer = parseInt(document.getElementById(`answer-${player}`).value);
+                let diff = Math.abs(answer - question.year);
+                if (diff === minDiff) {
+                    closestPlayer.push(player);
+                }
+                else if (diff < minDiff) {
+                    minDiff = diff;
+                    closestPlayer = []
+                    closestPlayer.push(player);
+                }
+                if (answer === question.year) {
+                    perfectWinner.push(player);
+                }
+            });
+            console.log("clorestPlayer: " + closestPlayer)
+            console.log("perfectWinner: " + perfectWinner)
+
+            if (perfectWinner.length) {
+                perfectWinner.forEach(winner => {
+                    scores[winner] += 3;
+                });
+                document.getElementById("roundResult").innerText = `${perfectWinner.join(", ")} gagne(nt) 3 points !`;
+            } else {
+                closestPlayer.forEach(winner => {
+                    scores[winner] += 1;
+                });
+                document.getElementById("roundResult").innerText = `${closestPlayer.join(", ")} gagne(nt) 1 point !`;
+            }
+            updateScores();
+            document.getElementById("explanation").innerText = `${question.invention} a été inventé en ${question.year}. ${question.explanation}`;
+            document.getElementById("game").style.display = "none";
+            document.getElementById("results").style.display = "block";
+        }
+
+        function nextRound() {
+            document.getElementById("results").style.display = "none";
+            if (checkWinner()) return;
+            document.getElementById("game").style.display = "block";
+            loadQuestion();
+        }
+
+        function updateScores() {
+            let currentScoresTable = document.getElementById("currentScores");
+            currentScoresTable.innerHTML = "<tr><th>Joueur</th><th>Score</th></tr>";
+            Object.keys(scores).forEach(player => {
+                currentScoresTable.innerHTML += `<tr><td>${player}</td><td>${scores[player]}</td></tr>`;
+            });
+        }
+
+        function checkWinner() {
+            let winners = Object.keys(scores).filter(player => scores[player] >= 5);
+            if (winners.length) {
+                document.getElementById("results").style.display = "none";
+                document.getElementById("endGame").classList.remove("hidden");
+                document.getElementById("winner").innerText = `${winners.join(",")} remporte(nt) la partie !`;
+                let finalScoresTable = document.getElementById("finalScores");
+                finalScoresTable.innerHTML = "<tr><th>Joueur</th><th>Score</th></tr>";
+                Object.keys(scores).forEach(player => {
+                    finalScoresTable.innerHTML += `<tr><td>${player}</td><td>${scores[player]}</td></tr>`;
+                });
+                return true;
+            }
+            return false;
+        }
+    </script>
+</body>
+</html>
