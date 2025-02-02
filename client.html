@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu des Inventions - Multijoueur</title>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        #game, #results, #endGame { display: none; }
+    </style>
+</head>
+<body>
+    <div id="setup">
+        <h1>Entrez les noms des joueurs</h1>
+        <form id="playerForm">
+            <input type="text" placeholder="Nom du joueur" id="playerInput">
+            <button type="button" onclick="joinGame()">Rejoindre la Partie</button>
+        </form>
+        <h3>Code de la salle : <span id="roomCode"></span></h3>
+        <button onclick="nextRound()">Lancer la partie</button>
+    </div>
+
+    <div id="game">
+        <h2 id="question"></h2>
+        <div id="answers"></div>
+        <button onclick="validateAnswers()">Valider</button>
+        <button onclick="closeAnswers()">Cloture des réponses</button>
+    </div>
+
+    <div id="results">
+        <h2 id="roundResult"></h2>
+        <p id="explanation"></p>
+        <button onclick="nextRound()">Suivant</button>
+    </div>
+
+    <div id="endGame" class="hidden">
+        <h1>Partie terminée !</h1>
+        <table border="1" id="finalScores"></table>
+        <h2 id="winner"></h2>
+    </div>
+
+    <script>
+        const socket = io("http://localhost:3000");
+        let playerName = "";
+        let roomCode = "";
+
+        function joinGame() {
+            playerName = document.getElementById("playerInput").value.trim();
+            if (!playerName) return alert("Entrez un nom de joueur");
+            roomCode = prompt("Entrez le code de la salle ou laissez vide pour en créer une nouvelle");
+            socket.emit("joinGame", { playerName, roomCode });
+        }
+
+        socket.on("roomCreated", (code) => {
+            roomCode = code;
+            document.getElementById("roomCode").innerText = code;
+        });
+
+        socket.on("gameStarted", (question) => {
+            document.getElementById("setup").style.display = "none";
+            document.getElementById("results").style.display = "none";
+            document.getElementById("game").style.display = "block";
+            displayQuestion(question);
+        });
+
+        function displayQuestion(question) {
+            document.getElementById("question").innerText = `Quand a été inventé ${question.invention} ?`;
+            let answersDiv = document.getElementById("answers");
+            answersDiv.innerHTML = `<p>${playerName} : <input type='number' id='answer'></p>`;
+        }
+
+        function validateAnswers() {
+            let answer = parseInt(document.getElementById("answer").value);
+            if (isNaN(answer)) return;
+            socket.emit("submitAnswer", { roomCode, playerName, answer });
+        }
+
+        function closeAnswers() {
+            socket.emit("endRound", { roomCode });
+        }
+
+        socket.on("roundResult", ({ winners, isPerfectWinners, explanation, scores }) => {
+            let roundResultMessage = `${winners.join(",")} gagne(nt)`;
+            roundResultMessage += isPerfectWinners ? ` 3 points !` : ` 1 point !`;
+            document.getElementById("game").style.display = "none";
+            document.getElementById("results").style.display = "block";
+            document.getElementById("roundResult").innerText = roundResultMessage;
+            document.getElementById("explanation").innerText = explanation;
+        });
+
+        function nextRound() {
+            socket.emit("nextRound", roomCode);
+        }
+
+        socket.on("gameEnded", ({ winners, scores, logs }) => {
+            document.getElementById("results").style.display = "none";
+            document.getElementById("endGame").style.display = "block";
+            document.getElementById("winner").innerText = `Gagnants : ${winners.join(", ")}`;
+            let finalScoresTable = document.getElementById("finalScores");
+            finalScoresTable.innerHTML = "<tr><th>Joueur</th><th>Score</th></tr>";
+            Object.keys(scores).forEach(player => {
+                finalScoresTable.innerHTML += `<tr><td>${player}</td><td>${scores[player]}</td></tr>`;
+            });
+            console.log(logs);
+        });
+    </script>
+</body>
+</html>
