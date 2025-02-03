@@ -4,16 +4,24 @@ const { Server } = require("socket.io");
 
 const app = express();
 const server = http.createServer(app);
-const allowedOrigins = ["http://cetaitquand.aymnms.fr/", "https://aymnms.github.io/c-etait-quand/", "https://cetaitquand.aymnms.fr/"];
+const allowedOrigins = [
+    "http://cetaitquand.aymnms.fr",
+    "https://aymnms.github.io",
+    "https://cetaitquand.aymnms.fr"
+];
+
 const io = new Server(server, {
     cors: {
         origin: (origin, callback) => {
-            if (!origin || allowedOrigins.includes(origin)) {
+            if (!origin || allowedOrigins.some(o => origin.startsWith(o))) {
                 callback(null, true);
             } else {
+                console.log(`CORS blocked request from: ${origin}`); // Pour debug
                 callback(new Error("Not allowed by CORS"));
             }
-        }
+        },
+        methods: ["GET", "POST"],
+        credentials: true
     },
     pingInterval: 25000,
     pingTimeout: 5000
