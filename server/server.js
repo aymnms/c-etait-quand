@@ -138,7 +138,7 @@ io.on("connection", (socket) => {
         console.log("Un joueur s'est déconnecté");
         for (let roomCode in rooms) {
             if (rooms[roomCode].players[socket.id]) {
-                io.to(roomCode).emit("playerDisconwnected", rooms[roomCode].players[socket.id]);
+                io.to(roomCode).emit("playerDisconnected", rooms[roomCode].players[socket.id]);
                 delete rooms[roomCode].players[socket.id];
             }
         }
