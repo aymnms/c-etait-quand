@@ -59,7 +59,14 @@ io.on("connection", (socket) => {
     });
 
     socket.on("submitAnswer", ({ roomCode, playerName, answer }) => {
-        if (!rooms[roomCode]) return;
+        if (!rooms[roomCode]) {
+            socket.emit("errorMessage", "La salle n'existe pas !");
+            return;
+        }
+        if (!rooms[roomCode].players[playerName]) {
+            socket.emit("errorMessage", "Le joueur n'existe pas dans cette salle !");
+            return;
+        }
         rooms[roomCode].currentAnswers[playerName] = answer;
     });
 
@@ -120,6 +127,12 @@ io.on("connection", (socket) => {
     
     socket.on("disconnect", () => {
         console.log("Un joueur s'est déconnecté");
+        for (let roomCode in rooms) {
+            if (rooms[roomCode].players[socket.id]) {
+                io.to(roomCode).emit("playerDisconwnected", rooms[roomCode].players[socket.id]);
+                delete rooms[roomCode].players[socket.id];
+            }
+        }
     });
 });
 
