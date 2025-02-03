@@ -59,7 +59,14 @@ io.on("connection", (socket) => {
     });
 
     socket.on("submitAnswer", ({ roomCode, playerName, answer }) => {
-        if (!rooms[roomCode]) return;
+        if (!rooms[roomCode]) {
+            socket.emit("errorMessage", "La salle n'existe pas !");
+            return;
+        }
+        if (!rooms[roomCode].players[playerName]) {
+            socket.emit("errorMessage", "Le joueur n'existe pas dans cette salle !");
+            return;
+        }
         rooms[roomCode].currentAnswers[playerName] = answer;
     });
 
