@@ -108,6 +108,10 @@
         socket.on("errorMessage", (message) => {
             alert(message);
         });
+
+        socket.on("playerDisconnected", (player) => {
+            alert(player + " vient de quitter la partie");
+        });
     </script>
 </body>
 </html>
