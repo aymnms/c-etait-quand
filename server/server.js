@@ -4,8 +4,17 @@ const { Server } = require("socket.io");
 
 const app = express();
 const server = http.createServer(app);
+const allowedOrigins = ["http://cetaitquand.aymnms.fr/", "https://aymnms.github.io/c-etait-quand/", "https://cetaitquand.aymnms.fr/"];
 const io = new Server(server, {
-    cors: { origin: "*" },
+    cors: {
+        origin: (origin, callback) => {
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error("Not allowed by CORS"));
+            }
+        }
+    },
     pingInterval: 25000,
     pingTimeout: 5000
 });
