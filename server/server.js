@@ -7,7 +7,8 @@ const server = http.createServer(app);
 const allowedOrigins = [
     "http://cetaitquand.aymnms.fr",
     "https://aymnms.github.io",
-    "https://cetaitquand.aymnms.fr"
+    "https://cetaitquand.aymnms.fr",
+    "https://c-etait-quand-front.onrender.com"
 ];
 
 const io = new Server(server, {
