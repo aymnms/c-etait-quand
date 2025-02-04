@@ -88,63 +88,61 @@ io.on("connection", (socket) => {
     });
 
     socket.on("endRound", ({ roomCode }) => {
+        const room = rooms.get(roomCode);
+        if (!room) return;
+        const players = room.players;
+        const answers = room.currentAnswers;
+
         // génération du log
         let log = {
-            question: questions[rooms.get(roomCode).currentQuestionIndex],
-            answers: Object.fromEntries(rooms.get(roomCode).currentAnswers),
+            question: questions[room.currentQuestionIndex],
+            answers: Object.fromEntries(answers),
             closestPlayers: [],
             perfectWinners: []
         }
         
-        // qui remporte des points ?
+        // Déterminer qui remporte des points
         let minDiff = Infinity;
-        let players = rooms.get(roomCode).players.keys();
 
-        rooms.get(roomCode).players.forEach((_, player) => {
-            let answer = log.answers[player];
+        answers.forEach((answer, player) => {
             let diff = Math.abs(answer - log.question.year);
-        
+
             if (diff < minDiff) {
                 minDiff = diff;
                 log.closestPlayers = [player];
             } else if (diff === minDiff) {
                 log.closestPlayers.push(player);
             }
-
+    
             if (answer === log.question.year) {
                 log.perfectWinners.push(player);
             }
         });
 
         // add log to logs
-        rooms.get(roomCode).logs.push(log);
+        room.logs.push(log);
 
         // reset currentAnserws
-        rooms.get(roomCode).currentAnswers.clear();
+        answers.clear();
         
-        // update des scores
+        // COPIER COLLER GPT - A TESTER ET VERIFIER
+        // Mise à jour des scores
+        const updateScore = (player, points) => {
+            players.set(player, players.get(player) + points);
+        };
+
         if (log.perfectWinners.length) {
-            log.perfectWinners.forEach(winner => {
-                rooms.get(roomCode).players.set(
-                    winner,
-                    rooms.get(roomCode).players.get(winner) + 3
-                );
-            });
+            log.perfectWinners.forEach(winner => updateScore(winner, 3));
         } else {
-            log.closestPlayers.forEach(winner => {
-                rooms.get(roomCode).players.set(
-                    winner,
-                    rooms.get(roomCode).players.get(winner) + 1
-                );
-            });
+            log.closestPlayers.forEach(winner => updateScore(winner, 1));
         }
 
-        // emit resultat aux joueurs
+        // Envoyer le résultat aux joueurs
         io.to(roomCode).emit("roundResult", {
             winners: log.perfectWinners.length ? log.perfectWinners : log.closestPlayers,
             isPerfectWinners: log.perfectWinners.length,
             explanation: `${log.question.invention} a été inventé en ${log.question.year}. ${log.question.explanation}`,
-            scores: rooms.get(roomCode).players
+            scores: Object.fromEntries(players)
         });
     });
     
