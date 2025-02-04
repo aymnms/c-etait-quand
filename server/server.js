@@ -44,6 +44,7 @@ io.on("connection", (socket) => {
             roomCode = Math.random().toString(36).substring(2, 7);
             rooms[roomCode] = {
                 players: {},
+                socketToPlayer: {},
                 currentQuestionIndex: 0,
                 currentAnswers: {},
                 logs: []
@@ -53,6 +54,7 @@ io.on("connection", (socket) => {
         
         socket.join(roomCode);
         rooms[roomCode].players[playerName] = 0;
+        rooms[roomCode].socketToPlayer[socket.id] = playerName;
         console.log(`${playerName} a rejoint la salle ${roomCode}`);
     });
 
@@ -136,13 +138,18 @@ io.on("connection", (socket) => {
     });
     
     socket.on("disconnect", () => {
-        console.log("Un joueur s'est déconnecté");
+        let playerIdentified = false;
         for (let roomCode in rooms) {
-            if (rooms[roomCode].players[socket.id]) {
-                io.to(roomCode).emit("playerDisconnected", rooms[roomCode].players[socket.id]);
-                delete rooms[roomCode].players[socket.id];
+            let playerName = rooms[roomCode].socketToPlayer[socket.id];
+            if (playerName) {
+                playerIdentified = true;
+                console.log(playerName + " s'est déconnecté");
+                io.to(roomCode).emit("playerDisconnected", playerName);
+                delete rooms[roomCode].players[playerName];
+                delete rooms[roomCode].socketToPlayer[socket.id];
             }
         }
+        if (!playerIdentified) console.log("Un joueur s'est déconnecté");
     });
 });
 
