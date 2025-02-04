@@ -1,15 +1,16 @@
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
+require("dotenv").config();
+
+const ENV = process.env.NODE_ENV || "local";
 
 const app = express();
 const server = http.createServer(app);
 const allowedOrigins = [
-    "http://cetaitquand.aymnms.fr",
-    "https://aymnms.github.io",
-    "https://cetaitquand.aymnms.fr",
-    "https://c-etait-quand-front.onrender.com"
-];
+    process.env.FRONTEND_URL,
+    process.env.FRONTEND_URL_2,
+].filter(Boolean);
 
 const io = new Server(server, {
     cors: {
@@ -17,7 +18,7 @@ const io = new Server(server, {
             if (!origin || allowedOrigins.some(o => origin.startsWith(o))) {
                 callback(null, true);
             } else {
-                console.log(`CORS blocked request from: ${origin}`); // Pour debug
+                console.log(`CORS blocked request from: ${origin}`);
                 callback(new Error("Not allowed by CORS"));
             }
         },
@@ -145,7 +146,7 @@ io.on("connection", (socket) => {
     });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 server.listen(PORT, () => {
     console.log("Serveur WebSocket démarré sur le port " + PORT);
 });
