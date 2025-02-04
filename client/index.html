@@ -42,7 +42,23 @@
     </div>
 
     <script>
-        const socket = io("https://c-etait-quand-back.onrender.com");
+        const ENV = window.location.href.includes("index.html") ? "local" : window.location.href.includes("preprod") ? "preprod" : "prod";
+
+        const CONFIG = {
+            local: {
+                BACKEND_URL: "http://localhost:3000",
+            },
+            preprod: {
+                BACKEND_URL: "https://c-etait-quand-back-preprod.onrender.com",
+            },
+            prod: {
+                BACKEND_URL: "https://c-etait-quand-back.onrender.com",
+            }
+        };
+
+        const BACKEND_URL = CONFIG[ENV].BACKEND_URL;
+        
+        const socket = io(BACKEND_URL);
         let playerName = "";
         let roomCode = "";
 
