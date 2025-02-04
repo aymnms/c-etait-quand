@@ -21,12 +21,6 @@ const io = new Server(server, {
                 console.log(`CORS blocked request from: ${origin}`);
                 callback(new Error("Not allowed by CORS"));
             }
-            console.log("origin: " + origin);
-            console.log("allowedOrigins:" + allowedOrigins);
-            console.log("!origin: " + !origin);
-            console.log("allowedOrigins.some(o => origin.startsWith(o)):" + allowedOrigins.some(o => origin.startsWith(o)));
-            console.log("allowedOrigins.includes(origin): " + allowedOrigins.includes(origin));
-            console.log("allowedOrigins" + allowedOrigins[0] === origin);
         },
         methods: ["GET", "POST"],
         credentials: true
