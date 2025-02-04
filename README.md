@@ -73,8 +73,6 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
 🇫🇷 Il s'agit d'un site de jeux de culture générale sur les dates de création des inventions. L'objectif est de trouver la date parfaite ou la plus proche ! Le premier joueur à atteindre 10 a gagné !
 
 🇬🇧 This is a website of general culture games about invention creation dates. The objective is to find the perfect or the closest date! The first player to reach 10 wins!
