@@ -44,32 +44,32 @@ io.on("connection", (socket) => {
         if (!roomCode) {
             roomCode = Math.random().toString(36).substring(2, 7);
             rooms.set(roomCode, {
-                players: {},
-                socketToPlayer: {},
+                players: new Map(),
+                socketToPlayer: new Map(),
                 currentQuestionIndex: 0,
-                currentAnswers: {},
+                currentAnswers: new Map(),
                 logs: []
             });
             socket.emit("roomCreated", roomCode);
         }
         
         socket.join(roomCode);
-        // rooms[roomCode].players[playerName] = 0;
-        // rooms[roomCode].socketToPlayer[socket.id] = playerName;
-        rooms.get(roomCode).players[playerName] = 0;
-        rooms.get(roomCode).socketToPlayer[socket.id] = playerName;
+        rooms.get(roomCode).players.set(playerName, 0);
+        rooms.get(roomCode).socketToPlayer.set(socket.id, playerName);
         console.log(`${playerName} a rejoint la salle ${roomCode}`);
     });
 
     socket.on("nextRound", (roomCode) => {
-        // if (!rooms[roomCode]) return;
-        // rooms[roomCode].currentQuestionIndex = Math.floor(Math.random() * questions.length);
         if (!rooms.has(roomCode)) return;
         rooms.get(roomCode).currentQuestionIndex = Math.floor(Math.random() * questions.length);
         
-        let winners = Object.keys(rooms.get(roomCode).players).filter(player => rooms.get(roomCode).players[player] >= 5);
+        let winners = [];
+        for (const [player, score] of rooms.get(roomCode).players.entries()) {
+            if (score >= 5) winners.push(player);
+        }
+
         if (winners.length) {
-            io.to(roomCode).emit("gameEnded", { winners, scores: rooms.get(roomCode).players, logs: rooms.get(roomCode).logs });
+            io.to(roomCode).emit("gameEnded", { winners, scores: Object.fromEntries(rooms.get(roomCode).players.entries()), logs: rooms.get(roomCode).logs });
         } else {
             io.to(roomCode).emit("gameStarted", questions[rooms.get(roomCode).currentQuestionIndex]);
         }
@@ -80,27 +80,27 @@ io.on("connection", (socket) => {
             socket.emit("errorMessage", "La salle n'existe pas !");
             return;
         }
-        if (rooms.get(roomCode).players[playerName] === undefined) {
+        if (rooms.get(roomCode).players.get(playerName) === undefined) {
             socket.emit("errorMessage", "Le joueur n'existe pas dans cette salle !");
             return;
         }
-        rooms.get(roomCode).currentAnswers[playerName] = answer;
+        rooms.get(roomCode).currentAnswers.set(playerName, answer);
     });
 
     socket.on("endRound", ({ roomCode }) => {
         // génération du log
         let log = {
             question: questions[rooms.get(roomCode).currentQuestionIndex],
-            answers: rooms.get(roomCode).currentAnswers,
+            answers: Object.fromEntries(rooms.get(roomCode).currentAnswers),
             closestPlayers: [],
             perfectWinners: []
         }
         
         // qui remporte des points ?
         let minDiff = Infinity;
-        let players = Object.keys(rooms.get(roomCode).players);
+        let players = rooms.get(roomCode).players.keys();
 
-        players.forEach(player => {
+        for (let player of players) {
             let answer = log.answers[player];
             let diff = Math.abs(answer - log.question.year);
             if (diff === minDiff) {
@@ -114,22 +114,28 @@ io.on("connection", (socket) => {
             if (answer === log.question.year) {
                 log.perfectWinners.push(player);
             }
-        });
+        };
 
         // add log to logs
         rooms.get(roomCode).logs.push(log);
 
         // reset currentAnserws
-        rooms.get(roomCode).currentAnswers = {}
-
+        rooms.get(roomCode).currentAnswers.clear();
+        
         // update des scores
         if (log.perfectWinners.length) {
             log.perfectWinners.forEach(winner => {
-                rooms.get(roomCode).players[winner] += 3;
+                rooms.get(roomCode).players.set(
+                    winner,
+                    rooms.get(roomCode).players.get(winner) + 3
+                );
             });
         } else {
             log.closestPlayers.forEach(winner => {
-                rooms.get(roomCode).players[winner] += 1;
+                rooms.get(roomCode).players.set(
+                    winner,
+                    rooms.get(roomCode).players.get(winner) + 1
+                );
             });
         }
 
@@ -144,14 +150,14 @@ io.on("connection", (socket) => {
     
     socket.on("disconnect", () => {
         let playerIdentified = false;
-        for (let roomCode in rooms) {
-            let playerName = rooms.get(roomCode).socketToPlayer[socket.id];
+        for (let roomCode of rooms.keys()) {
+            let playerName = rooms.get(roomCode).socketToPlayer.get(socket.id);
             if (playerName) {
                 playerIdentified = true;
                 console.log(playerName + " s'est déconnecté");
                 io.to(roomCode).emit("playerDisconnected", playerName);
-                delete rooms.get(roomCode).players[playerName];
-                delete rooms.get(roomCode).socketToPlayer[socket.id];
+                rooms.get(roomCode).players.delete(playerName);
+                rooms.get(roomCode).socketToPlayer.delete(socket.id);
             }
         }
         if (!playerIdentified) console.log("Un joueur s'est déconnecté");
