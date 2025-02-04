@@ -100,21 +100,21 @@ io.on("connection", (socket) => {
         let minDiff = Infinity;
         let players = rooms.get(roomCode).players.keys();
 
-        for (let player of players) {
+        rooms.get(roomCode).players.forEach((_, player) => {
             let answer = log.answers[player];
             let diff = Math.abs(answer - log.question.year);
-            if (diff === minDiff) {
-                log.closestPlayers.push(player);
-            }
-            else if (diff < minDiff) {
+        
+            if (diff < minDiff) {
                 minDiff = diff;
-                log.closestPlayers = []
+                log.closestPlayers = [player];
+            } else if (diff === minDiff) {
                 log.closestPlayers.push(player);
             }
+
             if (answer === log.question.year) {
                 log.perfectWinners.push(player);
             }
-        };
+        });
 
         // add log to logs
         rooms.get(roomCode).logs.push(log);
@@ -149,18 +149,19 @@ io.on("connection", (socket) => {
     });
     
     socket.on("disconnect", () => {
-        let playerIdentified = false;
-        for (let roomCode of rooms.keys()) {
-            let playerName = rooms.get(roomCode).socketToPlayer.get(socket.id);
+        for (let [roomCode, roomData] of rooms.entries()) {
+            let playerName = roomData.socketToPlayer.get(socket.id);
             if (playerName) {
-                playerIdentified = true;
-                console.log(playerName + " s'est déconnecté");
+                console.log(`${playerName} s'est déconnecté`);
                 io.to(roomCode).emit("playerDisconnected", playerName);
-                rooms.get(roomCode).players.delete(playerName);
-                rooms.get(roomCode).socketToPlayer.delete(socket.id);
+        
+                roomData.players.delete(playerName);
+                roomData.socketToPlayer.delete(socket.id);
+        
+                return;
             }
         }
-        if (!playerIdentified) console.log("Un joueur s'est déconnecté");
+        console.log("Un joueur s'est déconnecté");
     });
 });
 
