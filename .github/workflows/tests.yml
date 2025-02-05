@@ -23,8 +23,11 @@ jobs:
         with:
           node-version: 18
 
+      - name: Go to directory
+        run: cd server
+
       - name: Install dependencies
-        run: cd server && npm install
+        run: npm install
 
       - name: Run tests
         run: npm test
