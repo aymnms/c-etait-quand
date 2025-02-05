@@ -128,7 +128,7 @@ io.on("connection", (socket) => {
             const playerName = room.removePlayer(socket.id);
             if (playerName) {
                 console.log(`${playerName} s'est déconnecté`);
-                io.to(roomCode).emit("playerDisconnected", playerName);
+                io.to(room.code).emit("playerDisconnected", playerName);
                 return;
             }
         }
