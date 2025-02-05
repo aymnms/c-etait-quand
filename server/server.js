@@ -2,7 +2,6 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 require("dotenv").config();
-const Room = require("./models/Room");
 const Game = require("./models/Game");
 
 const app = express();
