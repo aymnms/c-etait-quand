@@ -32,6 +32,7 @@
     <div id="results">
         <h2 id="roundResult"></h2>
         <p id="explanation"></p>
+        <table border="1" id="currentScores"></table>
         <button onclick="nextRound()">Suivant</button>
     </div>
 
@@ -106,6 +107,11 @@
             document.getElementById("results").style.display = "block";
             document.getElementById("roundResult").innerText = roundResultMessage;
             document.getElementById("explanation").innerText = explanation;
+            let currentScoresTable = document.getElementById("currentScores");
+            currentScoresTable.innerHTML = "<tr><th>Joueur</th><th>Score</th></tr>";
+            Object.keys(scores).forEach(player => {
+                currentScoresTable.innerHTML += `<tr><td>${player}</td><td>${scores[player]}</td></tr>`;
+            });
         });
 
         function nextRound() {
