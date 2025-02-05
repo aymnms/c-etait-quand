@@ -29,13 +29,12 @@ const io = new Server(server, {
     pingTimeout: 5000
 });
 
-// let rooms = {};
 let rooms = new Map();
 let questions = [
     { invention: "Imprimerie", year: 1440, explanation: "Inventée par Gutenberg." },
     { invention: "Téléphone", year: 1876, explanation: "Alexander Graham Bell en est l'inventeur." },
     { invention: "Internet", year: 1969, explanation: "ARPANET, ancêtre d'Internet, a vu le jour en 1969." }
-]
+];
 
 io.on("connection", (socket) => {
     console.log("Nouvelle connexion");
@@ -125,7 +124,6 @@ io.on("connection", (socket) => {
         // reset currentAnserws
         answers.clear();
         
-        // COPIER COLLER GPT - A TESTER ET VERIFIER
         // Mise à jour des scores
         const updateScore = (player, points) => {
             players.set(player, players.get(player) + points);
