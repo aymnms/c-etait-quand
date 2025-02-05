@@ -1,6 +1,6 @@
 const Player = require("./Player");
 
-module.exports = class Room {
+class Room {
     constructor(code) {
         this.code = code;
         this.players = new Map(); // Map(playerName -> Player)
@@ -55,3 +55,5 @@ module.exports = class Room {
         return winners;
     }
 }
+
+module.exports = Room;

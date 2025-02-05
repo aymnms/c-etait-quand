@@ -3,6 +3,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 require("dotenv").config();
 const Room = require("./models/Room");
+const Game = require("./models/Game");
 
 const ENV = process.env.NODE_ENV || "local";
 
@@ -30,25 +31,18 @@ const io = new Server(server, {
     pingTimeout: 5000
 });
 
-let questions = [
-    { invention: "Imprimerie", year: 1440, explanation: "Inventée par Gutenberg." },
-    { invention: "Téléphone", year: 1876, explanation: "Alexander Graham Bell en est l'inventeur." },
-    { invention: "Internet", year: 1969, explanation: "ARPANET, ancêtre d'Internet, a vu le jour en 1969." }
-];
-
-let rooms = new Map();
+const game = new Game();
 
 io.on("connection", (socket) => {
     console.log("Nouvelle connexion");
     
     socket.on("joinGame", ({ playerName, roomCode }) => {
         if (!roomCode) {
-            roomCode = Math.random().toString(36).substring(2, 7);
-            rooms.set(roomCode, new Room(roomCode));
+            roomCode = game.createRoom();
             socket.emit("roomCreated", roomCode);
         }
         
-        const room = rooms.get(roomCode);
+        const room = game.getRoom(roomCode);
         room.addPlayer(socket.id, playerName);
         socket.join(roomCode);
 
@@ -56,31 +50,31 @@ io.on("connection", (socket) => {
     });
 
     socket.on("nextRound", (roomCode) => {
-        if (!rooms.has(roomCode)) return;
-        const room = rooms.get(roomCode);
+        const room = game.getRoom(roomCode);
+        if (!room) return;
 
         const winners = room.getWinners();
         if (winners.length) {
             io.to(roomCode).emit("gameEnded", { winners, scores: room.getScores(), logs: room.logs });
         } else {
-            room.currentQuestionIndex = Math.floor(Math.random() * questions.length);
-            io.to(roomCode).emit("gameStarted", questions[room.currentQuestionIndex]);
+            game.randomQuestionIndex(roomCode);
+            io.to(roomCode).emit("gameStarted", game.getQuestion(room.currentQuestionIndex));
         }
     });
 
     socket.on("submitAnswer", ({ roomCode, playerName, answer }) => {
-        if (!rooms.has(roomCode)) {
+        if (!game.getRoom(roomCode)) {
             socket.emit("errorMessage", "La salle n'existe pas !");
             return;
         }
-        rooms.get(roomCode).submitAnswer(playerName, answer);
+        game.getRoom(roomCode).submitAnswer(playerName, answer);
     });
 
     socket.on("endRound", ({ roomCode }) => {
-        const room = rooms.get(roomCode);
+        const room = game.getRoom(roomCode);
         if (!room) return;
 
-        const question = questions[room.currentQuestionIndex];
+        const question = game.getQuestion(room.currentQuestionIndex);
 
         // génération du log
         let log = {
@@ -130,7 +124,7 @@ io.on("connection", (socket) => {
     });
     
     socket.on("disconnect", () => {
-        for (let room of rooms.values()) {
+        for (let room of game.rooms.values()) {
             const playerName = room.removePlayer(socket.id);
             if (playerName) {
                 console.log(`${playerName} s'est déconnecté`);

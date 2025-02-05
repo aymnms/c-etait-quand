@@ -1,4 +1,4 @@
-module.exports = class Player {
+class Player {
     constructor(name) {
         this.name = name;
         this.score = 0;
@@ -8,3 +8,5 @@ module.exports = class Player {
         this.score += points;
     }
 }
+
+module.exports = Player;
