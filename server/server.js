@@ -2,6 +2,8 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 require("dotenv").config();
+const Room = require("./models/Room");
+const Game = require("./models/Game");
 
 const ENV = process.env.NODE_ENV || "local";
 
@@ -29,120 +31,108 @@ const io = new Server(server, {
     pingTimeout: 5000
 });
 
-let rooms = {};
-let questions = [
-    { invention: "Imprimerie", year: 1440, explanation: "Inventée par Gutenberg." },
-    { invention: "Téléphone", year: 1876, explanation: "Alexander Graham Bell en est l'inventeur." },
-    { invention: "Internet", year: 1969, explanation: "ARPANET, ancêtre d'Internet, a vu le jour en 1969." }
-];
+const game = new Game();
 
 io.on("connection", (socket) => {
     console.log("Nouvelle connexion");
     
     socket.on("joinGame", ({ playerName, roomCode }) => {
         if (!roomCode) {
-            roomCode = Math.random().toString(36).substring(2, 7);
-            rooms[roomCode] = {
-                players: {},
-                currentQuestionIndex: 0,
-                currentAnswers: {},
-                logs: []
-            };
+            roomCode = game.createRoom();
             socket.emit("roomCreated", roomCode);
         }
         
+        const room = game.getRoom(roomCode);
+        room.addPlayer(socket.id, playerName);
         socket.join(roomCode);
-        rooms[roomCode].players[playerName] = 0;
+
         console.log(`${playerName} a rejoint la salle ${roomCode}`);
     });
 
     socket.on("nextRound", (roomCode) => {
-        if (!rooms[roomCode]) return;
-        rooms[roomCode].currentQuestionIndex = Math.floor(Math.random() * questions.length);
-        
-        let winners = Object.keys(rooms[roomCode].players).filter(player => rooms[roomCode].players[player] >= 5);
+        const room = game.getRoom(roomCode);
+        if (!room) return;
+
+        const winners = room.getWinners();
         if (winners.length) {
-            io.to(roomCode).emit("gameEnded", { winners, scores: rooms[roomCode].players, logs: rooms[roomCode].logs });
+            io.to(roomCode).emit("gameEnded", { winners, scores: room.getScores(), logs: room.logs });
         } else {
-            io.to(roomCode).emit("gameStarted", questions[rooms[roomCode].currentQuestionIndex]);
+            game.randomQuestionIndex(roomCode);
+            io.to(roomCode).emit("gameStarted", game.getQuestion(room.currentQuestionIndex));
         }
     });
 
     socket.on("submitAnswer", ({ roomCode, playerName, answer }) => {
-        if (!rooms[roomCode]) {
+        if (!game.getRoom(roomCode)) {
             socket.emit("errorMessage", "La salle n'existe pas !");
             return;
         }
-        if (!rooms[roomCode].players[playerName]) {
-            socket.emit("errorMessage", "Le joueur n'existe pas dans cette salle !");
-            return;
-        }
-        rooms[roomCode].currentAnswers[playerName] = answer;
+        game.getRoom(roomCode).submitAnswer(playerName, answer);
     });
 
     socket.on("endRound", ({ roomCode }) => {
+        const room = game.getRoom(roomCode);
+        if (!room) return;
+
+        const question = game.getQuestion(room.currentQuestionIndex);
+
         // génération du log
         let log = {
-            question: questions[rooms[roomCode].currentQuestionIndex],
-            answers: rooms[roomCode].currentAnswers,
+            question,
+            answers: Object.fromEntries(room.currentAnswers),
             closestPlayers: [],
             perfectWinners: []
         }
         
-        // qui remporte des points ?
+        // Déterminer qui remporte des points
         let minDiff = Infinity;
-        let players = Object.keys(rooms[roomCode].players);
-
-        players.forEach(player => {
-            let answer = log.answers[player];
+        room.currentAnswers.forEach((answer, player) => {
             let diff = Math.abs(answer - log.question.year);
-            if (diff === minDiff) {
-                log.closestPlayers.push(player);
-            }
-            else if (diff < minDiff) {
+
+            if (diff < minDiff) {
                 minDiff = diff;
-                log.closestPlayers = []
+                log.closestPlayers = [player];
+            } else if (diff === minDiff) {
                 log.closestPlayers.push(player);
             }
+    
             if (answer === log.question.year) {
                 log.perfectWinners.push(player);
             }
         });
 
         // add log to logs
-        rooms[roomCode].logs.push(log);
+        room.addLog(log);
 
         // reset currentAnserws
-        rooms[roomCode].currentAnswers = {}
-
-        // update des scores
+        room.resetAnswers();
+        
+        // Mise à jour des scores
         if (log.perfectWinners.length) {
-            log.perfectWinners.forEach(winner => {
-                rooms[roomCode].players[winner] += 3;
-            });
+            log.perfectWinners.forEach(winner => room.players.get(winner).addPoints(3));
         } else {
-            log.closestPlayers.forEach(winner => {
-                rooms[roomCode].players[winner] += 1;
-            });
+            log.closestPlayers.forEach(winner => room.players.get(winner).addPoints(1));
         }
 
-        // emit resultat aux joueurs
+        // Envoyer le résultat aux joueurs
         io.to(roomCode).emit("roundResult", {
             winners: log.perfectWinners.length ? log.perfectWinners : log.closestPlayers,
             isPerfectWinners: log.perfectWinners.length,
             explanation: `${log.question.invention} a été inventé en ${log.question.year}. ${log.question.explanation}`,
-            scores: rooms[roomCode].players
+            scores: room.getScores()
         });
     });
     
     socket.on("disconnect", () => {
-        console.log("Un joueur s'est déconnecté");
-        for (let roomCode in rooms) {
-            if (rooms[roomCode].players[socket.id]) {
-                io.to(roomCode).emit("playerDisconnected", rooms[roomCode].players[socket.id]);
-                delete rooms[roomCode].players[socket.id];
+        for (let room of game.rooms.values()) {
+            const playerName = room.removePlayer(socket.id);
+            if (playerName) {
+                console.log(`${playerName} s'est déconnecté`);
+                io.to(room.code).emit("playerDisconnected", playerName);
+                return;
             }
         }
+        console.log("Un joueur s'est déconnecté"); // log - indique que joueur déconnecté n'a pas été identifié
     });
 });
 
