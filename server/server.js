@@ -2,10 +2,7 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 require("dotenv").config();
-const Room = require("./models/Room");
 const Game = require("./models/Game");
-
-const ENV = process.env.NODE_ENV || "local";
 
 const app = express();
 const server = http.createServer(app);
