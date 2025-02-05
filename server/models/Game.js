@@ -27,9 +27,7 @@ class Game {
     randomQuestionIndex(roomCode) {
         const room = this.getRoom(roomCode);
         if (!room) return;
-        console.log("room.currentQuestionIndex old:" + room.currentQuestionIndex);
         room.currentQuestionIndex = Math.floor(Math.random() * this.questions.length);
-        console.log("room.currentQuestionIndex new:" + room.currentQuestionIndex);
     }
 
     getQuestion(index) {
