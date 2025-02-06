@@ -44,7 +44,7 @@ class Game {
     }
 
     startTimer(roomCode) {
-        let timeLeft = 10;
+        let timeLeft = process.env.TIMER;
         const room = this.roomManager.getRoom(roomCode);
         
         this.timers.set(roomCode, setInterval(() => {
