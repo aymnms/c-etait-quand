@@ -8,6 +8,7 @@ class Room {
         this.currentAnswers = new Map(); // Map(playerName -> answer)
         this.logs = [];
         this.currentQuestionIndex = 0;
+        this.timer = null;
     }
 
     addPlayer(socketId, playerName) {

@@ -24,6 +24,7 @@
 
     <div id="game">
         <h2 id="question"></h2>
+        <h3>Temps restant : <span id="timer">30</span> secondes</h3>
         <div id="answers"></div>
         <button onclick="validateAnswers()">Valider</button>
         <button onclick="closeAnswers()">Cloture des réponses</button>
@@ -100,7 +101,14 @@
             socket.emit("endRound", { roomCode });
         }
 
+        socket.on("timerUpdate", (timeLeft) => {
+            const timerElement = document.getElementById("timer");
+            timerElement.innerText = timeLeft;
+        });
+        
         socket.on("roundResult", ({ winners, isPerfectWinners, explanation, scores }) => {
+            console.log("winners: " + winners);
+
             let roundResultMessage = `${winners.join(",")} gagne(nt)`;
             roundResultMessage += isPerfectWinners ? ` 3 points !` : ` 1 point !`;
             document.getElementById("game").style.display = "none";
