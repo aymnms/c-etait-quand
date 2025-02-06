@@ -61,7 +61,7 @@
         if (ENV != "prod") document.title = ENV.toUpperCase() + " - " + document.title;
 
         const BACKEND_URL = CONFIG[ENV].BACKEND_URL;
-        
+
         const socket = io(BACKEND_URL);
         let playerName = "";
         let roomCode = "";
@@ -105,7 +105,7 @@
             const timerElement = document.getElementById("timer");
             timerElement.innerText = timeLeft;
         });
-        
+
         socket.on("roundResult", ({ winners, isPerfectWinners, explanation, scores }) => {
             console.log("winners: " + winners);
 

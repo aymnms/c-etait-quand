@@ -28,7 +28,7 @@ const io = new Server(server, {
     pingTimeout: 5000
 });
 
-const game = new Game();
+const game = new Game(io);
 
 io.on("connection", (socket) => {
     console.log("Nouvelle connexion");
@@ -38,7 +38,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("nextRound", (roomCode) => {
-        game.nextRound(io, roomCode);
+        game.nextRound(roomCode);
     });
 
     socket.on("submitAnswer", ({ roomCode, playerName, answer }) => {
@@ -46,11 +46,11 @@ io.on("connection", (socket) => {
     });
 
     socket.on("endRound", ({ roomCode }) => {
-        game.endRound(io, roomCode);
+        game.endRound(roomCode);
     });
     
     socket.on("disconnect", () => {
-        game.disconnect(socket, io);
+        game.disconnect(socket);
     });
 });
 
