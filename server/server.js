@@ -2,7 +2,7 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 require("dotenv").config();
-const Game = require("./models/Game");
+const GameSocketHandler = require("./models/GameSocketHandler");
 
 const app = express();
 const server = http.createServer(app);
@@ -28,33 +28,14 @@ const io = new Server(server, {
     pingTimeout: 5000
 });
 
-const game = new Game(io);
+const gameSocketHandler = new GameSocketHandler(io);
 
 io.on("connection", (socket) => {
     console.log("Nouvelle connexion");
-    
-    socket.on("joinGame", ({ playerName, roomCode }) => {
-        game.joinGame(socket, playerName, roomCode);
-    });
-
-    socket.on("nextRound", (roomCode) => {
-        game.nextRound(roomCode);
-    });
-
-    socket.on("submitAnswer", ({ roomCode, playerName, answer }) => {
-        game.submitAnswer(socket, roomCode, playerName, answer);
-    });
-
-    socket.on("endRound", ({ roomCode }) => {
-        game.endRound(roomCode);
-    });
-    
-    socket.on("disconnect", () => {
-        game.disconnect(socket);
-    });
+    gameSocketHandler.handleConnection(socket);
 });
 
 const PORT = process.env.PORT;
 server.listen(PORT, () => {
-    console.log("Serveur WebSocket démarré sur le port " + PORT);
+    console.log(`🚀 Serveur WebSocket démarré sur le port ${PORT}`);
 });

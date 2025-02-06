@@ -34,12 +34,13 @@ class Game {
         }
     }
 
-    submitAnswer(socket, roomCode, playerName, answer) {
-        if (!this.roomManager.getRoom(roomCode)) {
+    submitAnswer(roomCode, playerName, answer) {
+        const room = this.roomManager.getRoom(roomCode);
+        if (!room) {
             socket.emit("errorMessage", "La salle n'existe pas !");
             return;
         }
-        this.roomManager.getRoom(roomCode).submitAnswer(playerName, answer);
+        room.submitAnswer(playerName, answer);
     }
 
     startTimer(roomCode) {
@@ -49,7 +50,7 @@ class Game {
         this.timers.set(roomCode, setInterval(() => {
             this.io.to(room.code).emit("timerUpdate", timeLeft);
             console.log(`⏳ Timer ${room.code}: ${timeLeft} sec`);
-
+            
             if (timeLeft <= 0) {
                 this.stopTimer(roomCode);
                 this.endRound(roomCode);
