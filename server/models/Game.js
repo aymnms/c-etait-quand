@@ -114,7 +114,8 @@ class Game {
             winners: log.perfectWinners.length ? log.perfectWinners : log.closestPlayers,
             isPerfectWinners: log.perfectWinners.length > 0,
             explanation: `${log.question.invention} a été inventé en ${log.question.year}. ${log.question.explanation}`,
-            scores: room.getScores()
+            scores: room.getScores(),
+            answers: log.answers
         });
     }
 
