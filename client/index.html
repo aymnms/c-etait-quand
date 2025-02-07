@@ -9,6 +9,7 @@
     <style>
         body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
         #startGame, #game, #results, #next, #endGame { display: none; }
+        img { max-width: 100%; max-height: 100vh;}
     </style>
 </head>
 <body>
@@ -24,6 +25,7 @@
     </div>
 
     <div id="game">
+        <img id="questionImage" src=""/>
         <h2 id="question"></h2>
         <h3>Temps restant : <span id="timer">30</span> secondes</h3>
         <div id="answers"></div>
@@ -79,7 +81,8 @@
         }
 
         function displayQuestion(question) {
-            document.getElementById("question").innerText = `Quand a été inventé ${question.invention} ?`;
+            document.getElementById("question").innerText = `C'était quand... ${question.invention} ?`;
+            document.getElementById("questionImage").src=question.image;
             let answersDiv = document.getElementById("answers");
             answersDiv.innerHTML = `<p>${playerName} : <input type='number' id='answer'></p>`;
         }
