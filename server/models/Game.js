@@ -25,8 +25,11 @@ class Game {
         if (!room) return;
 
         const winners = room.getWinners();
-        if (winners.length) {
+        if (winners.length || room.players.length < 1) { // FIN DE GAME
             this.io.to(roomCode).emit("gameEnded", { winners, scores: room.getScores(), logs: room.logs });
+            this.io.socketsLeave(roomCode);
+            this.io.in(roomCode).disconnectSockets(true);
+            this.roomManager.deleteRoom(roomCode);
         } else {
             this.roomManager.randomQuestionIndex(roomCode);
             this.io.to(roomCode).emit("gameStarted", this.roomManager.getQuestion(room.currentQuestionIndex));
@@ -122,11 +125,15 @@ class Game {
             if (playerName) {
                 console.log(`${playerName} s'est déconnecté`);
                 this.io.to(room.code).emit("playerDisconnected", playerName);
-                return;
+                socket.leave(room.code);
+                socket.disconnect(true);
             }
+            // check if host == playerName -> changer host
         }
         console.log("Un joueur s'est déconnecté");
     }
+
+
 }
 
 module.exports = Game;
