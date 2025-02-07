@@ -102,8 +102,6 @@
         });
 
         socket.on("roundResult", ({ winners, isPerfectWinners, explanation, scores }) => {
-            console.log("winners: " + winners);
-
             let roundResultMessage = `${winners.join(",")} gagne(nt)`;
             roundResultMessage += isPerfectWinners ? ` 3 points !` : ` 1 point !`;
             document.getElementById("game").style.display = "none";
