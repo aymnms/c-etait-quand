@@ -24,14 +24,15 @@
 
     <div id="game">
         <h2 id="question"></h2>
+        <h3>Temps restant : <span id="timer">30</span> secondes</h3>
         <div id="answers"></div>
         <button onclick="validateAnswers()">Valider</button>
-        <button onclick="closeAnswers()">Cloture des réponses</button>
     </div>
 
     <div id="results">
         <h2 id="roundResult"></h2>
         <p id="explanation"></p>
+        <table border="1" id="currentScores"></table>
         <button onclick="nextRound()">Suivant</button>
     </div>
 
@@ -59,7 +60,7 @@
         if (ENV != "prod") document.title = ENV.toUpperCase() + " - " + document.title;
 
         const BACKEND_URL = CONFIG[ENV].BACKEND_URL;
-        
+
         const socket = io(BACKEND_URL);
         let playerName = "";
         let roomCode = "";
@@ -95,17 +96,25 @@
             socket.emit("submitAnswer", { roomCode, playerName, answer });
         }
 
-        function closeAnswers() {
-            socket.emit("endRound", { roomCode });
-        }
+        socket.on("timerUpdate", (timeLeft) => {
+            const timerElement = document.getElementById("timer");
+            timerElement.innerText = timeLeft;
+        });
 
         socket.on("roundResult", ({ winners, isPerfectWinners, explanation, scores }) => {
+            console.log("winners: " + winners);
+
             let roundResultMessage = `${winners.join(",")} gagne(nt)`;
             roundResultMessage += isPerfectWinners ? ` 3 points !` : ` 1 point !`;
             document.getElementById("game").style.display = "none";
             document.getElementById("results").style.display = "block";
             document.getElementById("roundResult").innerText = roundResultMessage;
             document.getElementById("explanation").innerText = explanation;
+            let currentScoresTable = document.getElementById("currentScores");
+            currentScoresTable.innerHTML = "<tr><th>Joueur</th><th>Score</th></tr>";
+            Object.keys(scores).forEach(player => {
+                currentScoresTable.innerHTML += `<tr><td>${player}</td><td>${scores[player]}</td></tr>`;
+            });
         });
 
         function nextRound() {
