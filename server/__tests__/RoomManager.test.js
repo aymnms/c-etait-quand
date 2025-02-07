@@ -22,6 +22,7 @@ describe("RoomManager class", () => {
         const question = roomManager.getQuestion(0);
         expect(question).toStrictEqual({
             invention: "Imprimerie",
+            image: "https://www.entrepreneur-individuel.fr/wp-content/uploads/2022/06/imprimeur.jpg",
             year: 1440,
             explanation: "Inventée par Gutenberg."
         });
