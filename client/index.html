@@ -8,7 +8,7 @@
     <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
-        #game, #results, #endGame { display: none; }
+        #startGame, #game, #results, #next, #endGame { display: none; }
     </style>
 </head>
 <body>
@@ -19,7 +19,7 @@
             <button type="button" onclick="joinGame()">Rejoindre la Partie</button>
         </form>
         <h3>Code de la salle : <span id="roomCode"></span></h3>
-        <button onclick="nextRound()">Lancer la partie</button>
+        <button id="startGame" onclick="nextRound()">Lancer la partie</button>
     </div>
 
     <div id="game">
@@ -33,7 +33,7 @@
         <h2 id="roundResult"></h2>
         <p id="explanation"></p>
         <table border="1" id="currentScores"></table>
-        <button onclick="nextRound()">Suivant</button>
+        <button id="next" onclick="nextRound()">Suivant</button>
     </div>
 
     <div id="endGame" class="hidden">
@@ -63,7 +63,9 @@
 
         const socket = io(BACKEND_URL);
         let playerName = "";
+        let playersName = []
         let roomCode = "";
+        let hostName = "";
 
         function joinGame() {
             playerName = document.getElementById("playerInput").value.trim();
@@ -71,18 +73,6 @@
             roomCode = prompt("Entrez le code de la salle ou laissez vide pour en créer une nouvelle");
             socket.emit("joinGame", { playerName, roomCode });
         }
-
-        socket.on("roomCreated", (code) => {
-            roomCode = code;
-            document.getElementById("roomCode").innerText = code;
-        });
-
-        socket.on("gameStarted", (question) => {
-            document.getElementById("setup").style.display = "none";
-            document.getElementById("results").style.display = "none";
-            document.getElementById("game").style.display = "block";
-            displayQuestion(question);
-        });
 
         function displayQuestion(question) {
             document.getElementById("question").innerText = `Quand a été inventé ${question.invention} ?`;
@@ -96,18 +86,75 @@
             socket.emit("submitAnswer", { roomCode, playerName, answer });
         }
 
+        function nextRound() {
+            socket.emit("nextRound", roomCode);
+        }
+
+        function updateHostDisplay() {
+            if (playerName == hostName) {
+                if (document.getElementById("setup").style.display === "block") {
+                    document.getElementById("startGame").style.display = "inline-block";
+                    document.getElementById("next").style.display = "none";
+                }
+                else if (document.getElementById("results").style.display === "block") {
+                    document.getElementById("startGame").style.display = "none";
+                    document.getElementById("next").style.display = "inline-block";
+                }
+            }
+        }
+
+        function updateDisplay(step) {
+            if (step === "setup") {
+                document.getElementById("setup").style.display = "block";
+                document.getElementById("game").style.display = "none";
+                document.getElementById("results").style.display = "none";
+                document.getElementById("endGame").style.display = "none";
+            }
+            else if (step === "game") {
+                document.getElementById("setup").style.display = "none";
+                document.getElementById("game").style.display = "block";
+                document.getElementById("results").style.display = "none";
+                document.getElementById("endGame").style.display = "none";
+            }
+            else if (step === "results") {
+                document.getElementById("setup").style.display = "none";
+                document.getElementById("game").style.display = "none";
+                document.getElementById("results").style.display = "block";
+                document.getElementById("endGame").style.display = "none";
+            }
+            else if (step === "endGame") {
+                document.getElementById("setup").style.display = "none";
+                document.getElementById("game").style.display = "none";
+                document.getElementById("results").style.display = "none";
+                document.getElementById("endGame").style.display = "block";
+            }
+        }
+
+        // ------- WEBSOCKET ------- //
+
+        socket.on("roomJoined", (code, players, host) => {
+            roomCode = code;
+            document.getElementById("roomCode").innerText = code;
+            playersName = players;
+            hostName = host;
+            updateDisplay("step");
+            updateHostDisplay();
+        });
+
+        socket.on("gameStarted", (question) => {
+            updateDisplay("game");
+            displayQuestion(question);
+        });
+
         socket.on("timerUpdate", (timeLeft) => {
             const timerElement = document.getElementById("timer");
             timerElement.innerText = timeLeft;
         });
 
         socket.on("roundResult", ({ winners, isPerfectWinners, explanation, scores }) => {
-            console.log("winners: " + winners);
-
+            updateDisplay("results");
             let roundResultMessage = `${winners.join(",")} gagne(nt)`;
             roundResultMessage += isPerfectWinners ? ` 3 points !` : ` 1 point !`;
-            document.getElementById("game").style.display = "none";
-            document.getElementById("results").style.display = "block";
             document.getElementById("roundResult").innerText = roundResultMessage;
             document.getElementById("explanation").innerText = explanation;
             let currentScoresTable = document.getElementById("currentScores");
@@ -115,15 +162,11 @@
             Object.keys(scores).forEach(player => {
                 currentScoresTable.innerHTML += `<tr><td>${player}</td><td>${scores[player]}</td></tr>`;
             });
+            updateHostDisplay();
         });
 
-        function nextRound() {
-            socket.emit("nextRound", roomCode);
-        }
-
         socket.on("gameEnded", ({ winners, scores, logs }) => {
-            document.getElementById("results").style.display = "none";
-            document.getElementById("endGame").style.display = "block";
+            updateDisplay("endGame");
             document.getElementById("winner").innerText = `Gagnants : ${winners.join(", ")}`;
             let finalScoresTable = document.getElementById("finalScores");
             finalScoresTable.innerHTML = "<tr><th>Joueur</th><th>Score</th></tr>";
@@ -137,9 +180,18 @@
             alert(message);
         });
 
-        socket.on("playerDisconnected", (player) => {
+        socket.on("playerDisconnected", (player, host) => {
             alert(player + " vient de quitter la partie");
+            if (hostName != host) {
+                hostName = host;
+                if (hostName === playerName){
+                    updateHostDisplay();
+                    alert("Vous êtes devenu le nouvel hôte !");
+                }
+            }
         });
+
+        updateDisplay("setup");
     </script>
 </body>
 </html>

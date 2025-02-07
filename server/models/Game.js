@@ -8,16 +8,15 @@ class Game {
     }
 
     joinGame(socket, playerName, roomCode) {
-        if (!roomCode) {
-            roomCode = this.roomManager.createRoom();
-            socket.emit("roomCreated", roomCode);
-        }
-        
+        if (!roomCode) roomCode = this.roomManager.createRoom();
+
         const room = this.roomManager.getRoom(roomCode);
+        if (!room) return;
         room.addPlayer(socket.id, playerName);
         socket.join(roomCode);
-
+        
         console.log(`${playerName} a rejoint la salle ${roomCode}`);
+        socket.emit("roomJoined", roomCode, [...room.players.keys()], room.host);
     }
 
     nextRound(roomCode) {
@@ -25,8 +24,11 @@ class Game {
         if (!room) return;
 
         const winners = room.getWinners();
-        if (winners.length) {
+        if (winners.length) { // FIN DE GAME
             this.io.to(roomCode).emit("gameEnded", { winners, scores: room.getScores(), logs: room.logs });
+            this.io.socketsLeave(roomCode);
+            this.io.in(roomCode).disconnectSockets(true);
+            this.roomManager.deleteRoom(roomCode);
         } else {
             this.roomManager.randomQuestionIndex(roomCode);
             this.io.to(roomCode).emit("gameStarted", this.roomManager.getQuestion(room.currentQuestionIndex));
@@ -117,15 +119,33 @@ class Game {
     }
 
     disconnect(socket) {
-        for (let room of this.roomManager.rooms.values()) {
+        for (let [roomCode, room] of this.roomManager.rooms.entries()) {
             const playerName = room.removePlayer(socket.id);
             if (playerName) {
-                console.log(`${playerName} s'est déconnecté`);
-                this.io.to(room.code).emit("playerDisconnected", playerName);
+                console.log(`❌ ${playerName} s'est déconnecté de la salle ${roomCode}`);
+                this.io.to(roomCode).emit("playerDisconnected", playerName, room.host);
+    
+                // Expulser le joueur de la room WebSocket
+                socket.leave(roomCode);
+    
+                // Vérifier si la room est vide
+                if (room.players.size === 0) {
+                    console.log(`🗑️ Room ${roomCode} supprimée (dernier joueur parti).`);
+                    
+                    // Expulser tous les sockets de la room avant suppression
+                    this.io.socketsLeave(roomCode);
+    
+                    // Supprimer la room de la mémoire
+                    this.roomManager.deleteRoom(roomCode);
+                }
+    
+                // Forcer la fermeture de la connexion WebSocket du joueur
+                socket.disconnect(true);
+
                 return;
             }
         }
-        console.log("Un joueur s'est déconnecté");
+        console.log("Un joueur s'est déconnecté sans être dans une room.");
     }
 }
 
