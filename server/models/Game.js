@@ -8,17 +8,15 @@ class Game {
     }
 
     joinGame(socket, playerName, roomCode) {
-        if (!roomCode) {
-            roomCode = this.roomManager.createRoom();
-            socket.emit("roomCreated", roomCode);
-        }
-        
+        if (!roomCode) roomCode = this.roomManager.createRoom();
+
         const room = this.roomManager.getRoom(roomCode);
         if (!room) return;
         room.addPlayer(socket.id, playerName);
         socket.join(roomCode);
-
+        
         console.log(`${playerName} a rejoint la salle ${roomCode}`);
+        socket.emit("roomJoined", roomCode, [...room.players.keys()], room.host);
     }
 
     nextRound(roomCode) {
@@ -125,7 +123,7 @@ class Game {
             const playerName = room.removePlayer(socket.id);
             if (playerName) {
                 console.log(`❌ ${playerName} s'est déconnecté de la salle ${roomCode}`);
-                this.io.to(roomCode).emit("playerDisconnected", playerName);
+                this.io.to(roomCode).emit("playerDisconnected", playerName, room.host);
     
                 // Expulser le joueur de la room WebSocket
                 socket.leave(roomCode);
