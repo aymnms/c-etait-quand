@@ -16,7 +16,7 @@ class Game {
         socket.join(roomCode);
         
         console.log(`${playerName} a rejoint la salle ${roomCode}`);
-        socket.emit("roomJoined", roomCode, [...room.players.keys()], room.host);
+        this.io.to(roomCode).emit("roomJoined", roomCode, [...room.players.keys()], room.host);
     }
 
     nextRound(roomCode) {

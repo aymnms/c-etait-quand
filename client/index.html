@@ -20,6 +20,7 @@
         </form>
         <h3>Code de la salle : <span id="roomCode"></span></h3>
         <button id="startGame" onclick="nextRound()">Lancer la partie</button>
+        <ul id="playerListSetup"></ul>
     </div>
 
     <div id="game">
@@ -27,6 +28,7 @@
         <h3>Temps restant : <span id="timer">30</span> secondes</h3>
         <div id="answers"></div>
         <button onclick="validateAnswers()">Valider</button>
+        <ul id="playerListGame"></ul>
     </div>
 
     <div id="results">
@@ -130,6 +132,20 @@
             }
         }
 
+        function displayPlayerList() {
+            const HtmlList = [
+                document.getElementById("playerListSetup"),
+                document.getElementById("playerListGame")
+            ];
+            let listElement = ""
+            for (const player of playersName) {
+                listElement += "<li>" + player + "</li>";
+            }
+            for (const HtmlElement of HtmlList) {
+                HtmlElement.innerHTML = listElement;
+            }
+        }
+
         // ------- WEBSOCKET ------- //
 
         socket.on("roomJoined", (code, players, host) => {
@@ -139,6 +155,7 @@
             hostName = host;
             updateDisplay("step");
             updateHostDisplay();
+            displayPlayerList();
         });
 
         socket.on("gameStarted", (question) => {
@@ -184,6 +201,7 @@
             alert(player + " vient de quitter la partie");
             if (hostName != host) {
                 hostName = host;
+                displayPlayerList();
                 if (hostName === playerName){
                     updateHostDisplay();
                     alert("Vous êtes devenu le nouvel hôte !");
