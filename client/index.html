@@ -27,7 +27,6 @@
         <h3>Temps restant : <span id="timer">30</span> secondes</h3>
         <div id="answers"></div>
         <button onclick="validateAnswers()">Valider</button>
-        <button onclick="closeAnswers()">Cloture des réponses</button>
     </div>
 
     <div id="results">
@@ -95,10 +94,6 @@
             let answer = parseInt(document.getElementById("answer").value);
             if (isNaN(answer)) return;
             socket.emit("submitAnswer", { roomCode, playerName, answer });
-        }
-
-        function closeAnswers() {
-            socket.emit("endRound", { roomCode });
         }
 
         socket.on("timerUpdate", (timeLeft) => {
