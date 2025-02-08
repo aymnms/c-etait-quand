@@ -116,12 +116,15 @@
       font-size: 30px;
       cursor: pointer;
     }
+    .btn-join:hover {
+      background-color: #7E3EC3;
+    }
     .code {
       color: #FFFFFF;
       font-weight: 700;
       font-size: 30px;
       margin-bottom: 10px;
-    }
+    }S
     /* Bouton Lancer */
     .btn-launch {
       width: 290px;
@@ -145,33 +148,36 @@
     </style>
 </head>
 <body>
-    <div id="setup" class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-        <div class="InfoCard">
-            <h2>CHOISIS UN AVATAR <br> ET UN SURNOM</h2>
-            <div class="avatar-selector">
-                <button class="arrow-btn"><img src="images/ArrowButtonLeft.png" /></button>
-                
-                <div class="avatar">
-                    <img src="images/Avatar1.png" />
+    <div id="setup">
+        <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+            <div class="InfoCard">
+                <h2>CHOISIS UN AVATAR <br> ET UN SURNOM</h2>
+                <div class="avatar-selector">
+                    <button class="arrow-btn"><img src="images/ArrowButtonLeft.png" /></button>
+                    
+                    <div class="avatar">
+                        <img src="images/Avatar1.png" />
+                    </div>
+                    
+                    <button class="arrow-btn"><img src="images/ArrowButtonRight.png" /></button>
                 </div>
-                
-                <button class="arrow-btn"><img src="images/ArrowButtonRight.png" /></button>
-              </div>
-              <form id="playerForm">
-              <input type="text" style="color: #ffffff" placeholder="Nom du joueur" id="playerInput" class="player-form">
-              <button type="button" onclick="joinGame()" class="btn-join">
-                Rejoindre
-              </button>
-          </form>
-          <div class="code">
-            CODE : <span id="roomCode"></span>
+                <form id="playerForm">
+                <input type="text" style="color: #ffffff" placeholder="Nom du joueur" id="playerInput" class="player-form">
+                <button type="button" onclick="joinGame()" class="btn-join">
+                    Rejoindre
+                </button>
+            </form>
+            <div class="code">
+                CODE : <span id="roomCode"></span>
+                </div>
+            <button onclick="nextRound()" class="btn-launch">
+                Lancer
+            </button>
             </div>
-          <button onclick="nextRound()" class="btn-launch">
-            Lancer
-          </button>
-          <ul id="playerListSetup"></ul>
         </div>
-      </div>
+    </div>
+      
+      
 
     <div id="game">
         <img id="questionImage" src=""/>
