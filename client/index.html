@@ -7,10 +7,6 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
-        img { max-width: 100%; max-height: 100vh;}
-        </style>
 </head>
 <body>
     <!-- HOME PAGE -->
@@ -22,18 +18,6 @@
         <button class="play-button" onclick="goToSetupPage(true)">Créer</button>
         <button class="play-button" onclick="goToSetupPage(false)">Rejoindre</button>
     </div>
-    
-    <!-- SETUP PAGE ORIGIN-->
-    <!-- <div id="setup">
-        <h1>Entrez les noms des joueurs</h1>
-        <form id="playerForm">
-            <input type="text" placeholder="Nom du joueur" id="playerInput">
-            <button type="button" onclick="joinGame()">Rejoindre la Partie</button>
-        </form>
-        <h3>Code de la salle : <span id="roomCode"></span></h3>
-        <button id="startGame" onclick="nextRound()">Lancer la partie</button>
-        <ul id="playerListSetup"></ul>
-    </div> -->
     
     <!-- SETUP PAGE AYMS-->
     <div id="setup" class="page-container">
