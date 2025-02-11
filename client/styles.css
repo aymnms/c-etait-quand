@@ -1,0 +1,418 @@
+/* ========== RESET DE BASE ========== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+    background-color: #3b1d53;
+    font-family: Arial, sans-serif;
+    color: #ffffff;
+    
+    /* Pour centrer verticalement et horizontalement tout le contenu */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* On occupe toute la hauteur de la fenêtre */
+    height: 100vh;
+}
+
+.container {
+  max-width: 1000px;
+  width: 90%;
+  margin: 0 auto;
+  text-align: center;
+  /*background-color: green; /* débug */
+}
+
+.logo-container {
+  margin-bottom: 2rem;
+}
+
+.logo {
+  width: 600px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.play-button {
+  background-color: #9C5EEB; /* Violet plus clair */
+  color: #ffffff;
+  border: none;       /* On enlève la bordure par défaut */
+  border-radius: 8px; /* Pour arrondir légèrement les coins */
+  
+  padding: 1rem 2rem;   /* Espace interne (vertical, horizontal) */
+  cursor: pointer;       /* Pour avoir le curseur en forme de main */
+  font-size: 2rem;     /* Taille du texte dans le bouton */
+  font-weight: bold;     /* On le veut bien visible */
+  text-transform: uppercase; /* Pour respecter le style "PLAY" */
+  
+  /* Optionnel : petite ombre pour le style */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s; /* Animation fluide quand on hover */
+}
+
+/* Au survol */
+.play-button:hover {
+  background-color: #AB76F5; /* Légèrement plus clair pour un feedback */
+}
+
+
+/* ======================================================================== */
+/* STYLES POUR LA PAGE "SETUP"                                              */
+/* ======================================================================== */
+
+/*
+  .page-container (ou un autre nom) servira de conteneur principal sur la 2e page.
+  Comme on utilise déjà "display:flex; justify-content:center; align-items:center; height:100vh;"
+  sur body, ce n’est pas strictement obligatoire d’en refaire un, mais c’est utile
+  si on veux gérer la largeur max, etc.
+*/
+.page-container {
+  width: 100%;
+  max-width: 800px;    /* Largeur max pour le contenu */
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Le bloc "carte" qui a un fond un peu plus sombre et des bords arrondis */
+.card {
+  background-color: #1F0A33;
+  border-radius: 16px;
+  padding: 2rem;
+  
+  width: 80%;
+  max-width: 500px;
+  margin: 0 auto; /* Centre horizontalement */
+  
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+/* Le titre de la carte */
+.card-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+/* Conteneur des flèches + image avatar */
+.avatar-selection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Boutons flèches */
+.avatar-nav-btn {
+  background-color: #4A3B5A;
+  border: none;
+  border-radius: 50%;
+  color: #FFFFFF;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  outline: none; /* Pour enlever le focus bleu par défaut */
+}
+
+.avatar-nav-btn:hover {
+  background-color: #6A5580;
+}
+
+/* Image de l’avatar */
+.avatar-img {
+  width: 100px;
+  height: auto;
+}
+
+/* Champ texte pour le surnom */
+.nickname-input, .code-input {
+  display: block;
+  margin: 0 auto 0.5rem auto;
+  padding: 0.5rem 1rem;
+  
+  background-color: #70597A;
+  color: #FFFFFF;
+  
+  border: none;
+  border-radius: 8px;
+  
+  font-size: 1rem;
+  text-align: center;
+}
+
+.nickname-input:focus, .code-input:focus {
+  outline: 2px solid #AB76F5;
+  outline-offset: 2px;
+}
+
+/* Bouton REJOINDRE */
+.join-button {
+  background-color: #9C5EEB;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 2rem;
+  margin: 1rem auto 0 auto;
+  
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s;
+}
+
+.join-button:hover {
+  background-color: #AB76F5;
+}
+
+#startGame, #next { display: none; }
+
+
+/* ======================================================================= */
+/* STYLES POUR LA PAGE "WAITING"                                           */
+/* ======================================================================= */
+
+/* Le conteneur global de la page Room */
+.room-container {
+  /* Si tu es resté avec un body en flex height:100vh, tu peux faire un display block */
+  display: flex;
+  flex-direction: column;  /* Empile : header, main, footer */
+  width: 90%;
+  max-width: 1000px;       /* Largeur maximum de la zone */
+  margin: 0 auto;          /* Centre horizontalement si la page est plus large */
+  border-radius: 16px;     /* Pour arrondir l’ensemble du rectangle */
+  overflow: hidden;        /* Pour que les bords arrondis soient nets */
+  
+  /* Couleur d'arrière-plan "enveloppe" : plus foncé ? */
+  background-color: #1F0A33; 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4); /* Petit effet d'ombre */
+}
+
+/* Header de la room */
+.room-header {
+  background-color: #1F0A33; /* Même couleur que le conteneur ? ou un peu plus sombre si tu veux ? */
+  padding: 1rem 2rem;
+  text-align: center; /* Centrer le titre "ROOM" */
+}
+
+.room-title {
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+}
+
+/* Bloc principal : on y met un fond plus clair ? */
+.room-main {
+  background-color: #644c9b; /* Par exemple, un violet plus clair que le header */
+  padding: 2rem;
+  border-radius: 16px;       /* L’intérieur a lui aussi des coins arrondis */
+  margin: 1rem;              /* Espace par rapport aux bords du container (header/footer) */
+}
+
+/* Titre "JOUEUR 4/14" */
+.player-count {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: left;
+
+  /* Eventuel effet de halo/vibration neon : */
+  text-shadow: 0 0 5px #AB76F5, 0 0 10px #AB76F5;
+}
+
+/* La liste des joueurs : on veut une disposition horizontale */
+.players-list {
+  display: flex;
+  gap: 2rem;               /* Espace entre chaque joueur */
+  flex-wrap: wrap;         /* Au cas où il y a plus de 4, ça passe à la ligne */
+  justify-content: flex-start;
+  align-items: center;
+}
+
+/* Chaque "player" : avatar + surnom */
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;     /* Centre le surnom sous l’avatar */
+}
+
+.player-avatar {
+  width: 70px;            /* Ajuste la taille selon ta maquette */
+  height: auto;
+  margin-bottom: 0.5rem;
+}
+
+.player-name {
+  font-size: 1rem;
+  font-weight: normal;    /* Ou bold, selon le style voulu */
+}
+
+/* Footer : zone du bouton "JOUER" */
+.room-footer {
+  background-color: #1F0A33; /* On reste dans la même couleur de la "card" globale */
+  text-align: center;
+  padding: 1rem 0;
+}
+
+/* Le bouton "JOUER" */
+.room-play-button {
+  background-color: #9C5EEB;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 2rem;
+  
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s;
+}
+
+.room-play-button:hover {
+  background-color: #AB76F5;
+}
+
+
+
+
+
+
+
+
+/* CSS ZEZE */
+
+
+body {
+  font-family: 'Quicksand', sans-serif;
+  text-align: center;
+  margin: 20px;
+  background-color: #3B1D53;
+  margin: 0;
+  padding: 0;
+}
+#game, #results, #endGame {
+  display: none;
+}
+.InfoCard {
+  width: 900px;
+  height: 730px;
+  background-color: #2C1E37;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 45px;
+  padding: 2rem;
+  text-align: center;
+}
+/* Titres */
+.InfoCard h2 {
+  font-size: 50px;
+  font-weight: 700;
+  margin-bottom: 0px;
+  line-height: 1.2;
+}
+
+/* Zone de l’avatar + flèches */
+.avatar-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.arrow-btn {
+  background: transparent;
+  border: none;
+  color: #FFFFFF;
+  font-size: 2rem;
+  padding: 0 1rem;
+  cursor: pointer;
+}
+.arrow-btn:hover {
+  color: #CCCCCC;
+}
+
+/* Avatar “dessiné” (ici simple cercle jaune) */
+.avatar {
+  width: 300px;
+  height: 300px;
+  background: transparent; 
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+input[type="text"] {
+  text-align: center;
+
+}
+::placeholder {
+  color: rgba(255, 255, 255, 0.466);
+}
+
+.player-form {
+  width: 363px;
+  height: 63px;
+  outline: 10px solid;
+  outline-color: #FFFFFF;
+  background-color: #ffffff73;
+  border: none;
+  border-radius: 20px;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 30px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.btn-join {
+  width: 270px;
+  height: 60px;
+  background-color: #AD72FE;
+  border: none;
+  color: #FFFFFF;
+  border-radius: 20px;
+  margin-left: 20px;
+  font-weight: 700;
+  font-size: 30px;
+  cursor: pointer;
+}
+.btn-join:hover {
+  background-color: #7E3EC3;
+}
+.code {
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+/* Bouton Lancer */
+.btn-launch {
+  width: 290px;
+  height: 80px;
+  background-color: #AD72FE;
+  border: none;
+  color: #FFFFFF;
+  border-radius: 20px;
+  padding: 0.5rem 2rem;
+  font-weight: 700;
+  font-size: 40px;
+  cursor: pointer;
+}
+.btn-launch:hover {
+  background-color: #7E3EC3;
+}
+
+img { max-width: 100%; max-height: 100vh;}
