@@ -17,10 +17,25 @@ if (ENV != "prod") document.title = ENV.toUpperCase() + " - " + document.title;
 const BACKEND_URL = CONFIG[ENV].BACKEND_URL;
 
 const socket = io(BACKEND_URL);
-let playerName = "";
-let playersName = []
-let roomCode = "";
-let hostName = "";
+
+const avatars = [
+    "Avatar1.png",
+    "Avatar2.png",
+    "Avatar3.png"
+];
+
+let myself = {
+    name: "",
+    indexAvatar: 0,
+    score: 0
+}
+
+let party = {
+    roomCode: "",
+    playerHostName: "",
+    players: [],
+    step: "home"
+}
 
 function goToSetupPage(isHost) {
     if (isHost) {
@@ -30,37 +45,49 @@ function goToSetupPage(isHost) {
     updateDisplay("setup");
 }
 
+function changeAvatar(direction) {
+    let avatarElement = document.getElementById("setup-avatar");
+
+    let index = myself.indexAvatar + direction;
+    if (index >= avatars.length) index = 0;
+    else if (index < 0) index = avatars.length - 1;
+
+    
+    myself.indexAvatar = index;
+    console.log(myself.indexAvatar);
+    avatarElement.src = "img/" + avatars[myself.indexAvatar];
+}
+
 function joinGame() {
-    playerName = document.getElementById("setup-playerInput").value.trim();
-    if (!playerName) return alert("Entrez un nom de joueur");
+    myself.name = document.getElementById("setup-playerInput").value.trim();
+    if (!myself.name) return alert("Entrez un nom de joueur"); 
     roomCodeElement = document.getElementById("setup-code");
     if (roomCodeElement.style.display !== "none") {
-        roomCode = roomCodeElement.value.trim();
-        if (!roomCode) return alert("Entrez un code de room");
+        party.roomCode = roomCodeElement.value.trim();
+        if (!party.roomCode) return alert("Entrez un code de room");
     }
-    socket.emit("joinGame", { playerName, roomCode });
-    // socket.emit("joinGame", { playerName, indexAvatar, roomCode });
+    socket.emit("joinGame", { playerName: myself.name, indexAvatar: myself.indexAvatar, roomCode: party.roomCode });
 }
 
 function displayQuestion(question) {
     document.getElementById("question").innerText = `C'était quand... ${question.invention} ?`;
     document.getElementById("questionImage").src=question.image;
     let answersDiv = document.getElementById("answers");
-    answersDiv.innerHTML = `<p>${playerName} : <input type='number' id='answer'></p>`;
+    answersDiv.innerHTML = `<p>${myself.name} : <input type='number' id='answer'></p>`;
 }
 
 function validateAnswers() {
     let answer = parseInt(document.getElementById("answer").value);
     if (isNaN(answer)) return;
-    socket.emit("submitAnswer", { roomCode, playerName, answer });
+    socket.emit("submitAnswer", { roomCode: party.roomCode, playerName: myself.name, answer });
 }
 
 function nextRound() {
-    socket.emit("nextRound", roomCode);
+    socket.emit("nextRound", party.roomCode);
 }
 
 function updateHostDisplay() {
-    if (playerName == hostName) {
+    if (myself.name == party.playerHostName) {
         if (document.getElementById("waiting").style.display === "block") {
             document.getElementById("startGame").style.display = "block";
             //document.getElementById("next").style.display = "none"; // QUAND RESULT SERA OK
@@ -73,6 +100,8 @@ function updateHostDisplay() {
 }
 
 function updateDisplay(step) {
+    party.step = step;
+
     let displays = {
         "home": "none",
         "setup": "none",
@@ -95,46 +124,25 @@ function displayPlayerList() {
         // document.getElementById("playerListGame")
     ];
     let listElement = ""
-    for (const player of playersName) {
+    for (const player of party.players) {
         listElement += `<div class="player">
-            <img src="img/Avatar1.png" alt="Avatar ${player}" class="player-avatar">
-            <p class="player-name">${player}</p>
+            <img src="img/${avatars[player.avatar]}" alt="Avatar ${player.name}" class="player-avatar">
+            <p class="player-name">${player.name}</p>
         </div>`
     }
     for (const HtmlElement of HtmlList) {
         HtmlElement.innerHTML = listElement;
     }
 
-    document.getElementById("nbPlayer").innerText = `JOUEUR ${playersName.length}/10`
-}
-
-function changeAvatar(direction) {
-    const avatars = [
-        "Avatar1.png",
-        "Avatar2.png",
-        "Avatar3.png"
-    ];
-
-    let avatar = document.getElementById("setup-avatar");
-    let src = avatar.src.split("/");
-    src = src[src.length - 1];
-    
-    let index = avatars.indexOf(src) + direction;
-    if (index >= avatars.length) {
-        index = 0;
-    } else if (index < 0) {
-        index = avatars.length - 1;
-    }
-
-    avatar.src = "img/" + avatars[index];
+    document.getElementById("nbPlayer").innerText = `JOUEUR ${party.players.length}/10`
 }
 
 // ------- WEBSOCKET ------- //
 
 socket.on("roomJoined", (code, players, host) => {
-    roomCode = code;
-    playersName = players;
-    hostName = host;
+    party.roomCode = code;
+    party.players = players;
+    party.playerHostName = host;
     updateDisplay("waiting");
     updateHostDisplay();
     displayPlayerList();
@@ -190,11 +198,15 @@ socket.on("errorMessage", (message) => {
 
 socket.on("playerDisconnected", (player, host) => {
     alert(player + " vient de quitter la partie");
-    playersName = playersName.filter(item => item !== player);
+    for (let localPlayer of party.players) {
+        if (localPlayer.name === player) {
+            party.players.splice(party.players.indexOf(localPlayer), 1);
+        }
+    }
     displayPlayerList();
-    if (hostName != host) {
-        hostName = host;
-        if (hostName === playerName){
+    if (party.playerHostName != host) {
+        party.playerHostName = host;
+        if (party.playerHostName === myself.name){
             updateHostDisplay();
             alert("Vous êtes devenu le nouvel hôte !");
         }

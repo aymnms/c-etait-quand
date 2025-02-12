@@ -7,18 +7,16 @@ class Game {
         this.timers = new Map();
     }
 
-    joinGame(socket, playerName, roomCode) {
-    // joinGame(socket, playerName, indexAvatar, roomCode) {
+    joinGame(socket, playerName, indexAvatar, roomCode) {
         if (!roomCode) roomCode = this.roomManager.createRoom();
 
         const room = this.roomManager.getRoom(roomCode);
         if (!room) return;
-        room.addPlayer(socket.id, playerName);
-        // room.addPlayer(socket.id, playerName, indexAvatar);
+        room.addPlayer(socket.id, playerName, indexAvatar);
         socket.join(roomCode);
         
         console.log(`${playerName} a rejoint la salle ${roomCode}`);
-        this.io.to(roomCode).emit("roomJoined", roomCode, [...room.players.keys()], room.host);
+        this.io.to(roomCode).emit("roomJoined", roomCode, [...room.players.values()], room.host);
     }
 
     nextRound(roomCode) {

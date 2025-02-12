@@ -1,8 +1,7 @@
 class Player {
-    constructor(name) {
-    // constructor(name, indexAvatar) {
+    constructor(name, indexAvatar) {
         this.name = name;
-        // this.avatar = indexAvatar;
+        this.avatar = indexAvatar;
         this.score = 0;
     }
 
