@@ -70,10 +70,9 @@ function joinGame() {
 }
 
 function displayQuestion(question) {
-    document.getElementById("question").innerText = `C'était quand... ${question.invention} ?`;
+    document.getElementById("question").innerText = `${question.invention}`;
     document.getElementById("questionImage").src=question.image;
-    let answersDiv = document.getElementById("answers");
-    answersDiv.innerHTML = `<p>${myself.name} : <input type='number' id='answer'></p>`;
+    document.getElementById("questionImage").alt=question.invention;
 }
 
 function validateAnswers() {

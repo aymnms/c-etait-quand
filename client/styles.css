@@ -283,10 +283,128 @@ body {
   background-color: #AB76F5;
 }
 
-img { max-width: 100%; max-height: 100vh;}
 
+/*********************************************************/
+/*            STYLES POUR LA PAGE GAME                   */
+/*********************************************************/
 
+/* Le body est peut-être déjà configuré (fond #2B0F43, etc.) 
+   et centré verticalement. Au besoin, par exemple :
+body {
+  background-color: #2B0F43;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  color: #ffffff; 
+  font-family: Arial, sans-serif;
+}
+*/
 
+/* Conteneur principal de la page */
+.game-page {
+  width: 90%;
+  max-width: 1000px;
+}
+
+/* ===== Le grand rectangle violet au premier plan ===== */
+.card-front {
+  position: relative;
+  background-color: #1F0A33; /* Violet principal */
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+/* ===== BANDEAU NOIR EN HAUT ===== */
+.card-header {
+  text-align: center;
+  padding: 1rem;
+  
+  /* Coins arrondis du haut */
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.card-header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ===== RECTANGLE VIOLET "INTÉRIEUR" ===== */
+.card-inner {
+  background-color: #7E57B5; /* Un violet plus clair ou plus foncé, au choix,
+                                pour bien faire ressortir le côté “encadré” */
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 1rem; /* Espace avant le footer */
+  text-align: center;
+}
+
+/* Sous-titre "L'IMPRIMERIE" */
+.event-title {
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+/* L’image au centre */
+.image-wrapper {
+  text-align: center;
+}
+
+.image-wrapper img {
+  max-width: 60%;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+/* ===== BANDEAU NOIR EN BAS ===== */
+.card-footer {
+  padding: 1rem;
+  
+  /* Coins arrondis du bas */
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Champ "DATE" */
+.date-input {
+  background-color: transparent; 
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* Bouton "VALIDER" */
+.validate-button {
+  background-color: #9C5EEB;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  
+  transition: background-color 0.3s;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+.validate-button:hover {
+  background-color: #AB76F5;
+}
 
 
 
@@ -414,5 +532,3 @@ input[type="text"] {
 .btn-launch:hover {
   background-color: #7E3EC3;
 }
-
-img { max-width: 100%; max-height: 100vh;}
