@@ -1,57 +1,51 @@
 /* ========== RESET DE BASE ========== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
-    background-color: #3b1d53;
-    font-family: Arial, sans-serif;
-    color: #ffffff;
-
-    /* Pour centrer verticalement et horizontalement tout le contenu */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
-    /* On occupe toute la hauteur de la fenêtre */
-    height: 100vh;
+  font-family: 'Quicksand', sans-serif;
+  padding: 0;
+  margin: 0;
+  
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #3B1D53;
+  color: hsl(0, 0%, 100%);
 }
 
-.container {
-  max-width: 1000px;
-  width: 90%;
-  margin: 0 auto;
-  text-align: center;
-  /*background-color: green; /* débug */
-}
-
-.logo-container {
-  margin-bottom: 2rem;
+.container { 
+  display: flex;
+  width: fit-content;
+  block-size: fit-content;
+  justify-content: center;
+   
 }
 
 .logo {
-  width: 600px;
-  height: auto;
-  display: block;
-  margin: 0 auto;
+  width: 550px; 
+  height: 550px;
+  object-fit: cover;
+  margin-bottom: 50px;
 }
 
+.menubutton-container {
+  display: flex;
+  gap: 10px;
+  width: fit-content;
+  block-size: fit-content;
+}
 .play-button {
   background-color: #9C5EEB; /* Violet plus clair */
   color: #ffffff;
   border: none;       /* On enlève la bordure par défaut */
-  border-radius: 8px; /* Pour arrondir légèrement les coins */
-  
-  padding: 1rem 2rem;   /* Espace interne (vertical, horizontal) */
+  border-radius: 40px; /* Pour arrondir légèrement les coins */
+  width: 306px;
+  height: 94px; 
   cursor: pointer;       /* Pour avoir le curseur en forme de main */
-  font-size: 2rem;     /* Taille du texte dans le bouton */
+  font-size: 40px;     /* Taille du texte dans le bouton */
   font-weight: bold;     /* On le veut bien visible */
   text-transform: uppercase; /* Pour respecter le style "PLAY" */
-  
-  /* Optionnel : petite ombre pour le style */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
   transition: background-color 0.3s; /* Animation fluide quand on hover */
 }
 
@@ -71,31 +65,38 @@ body {
   sur body, ce n’est pas strictement obligatoire d’en refaire un, mais c’est utile
   si on veux gérer la largeur max, etc.
 */
-.page-container {
+
+.logo-watermark {
+  position: absolute;
+  top: 45px;
+  right: 45px;
+  width: 192px;
+  height: 192px; 
+}
+.setup-container {
   width: 100%;
-  max-width: 800px;    /* Largeur max pour le contenu */
-  margin: 0 auto;
-  text-align: center;
+  box-sizing: border-box;
+  display: flex;
 }
 
 /* Le bloc "carte" qui a un fond un peu plus sombre et des bords arrondis */
 .card {
-  background-color: #1F0A33;
-  border-radius: 16px;
-  padding: 2rem;
-  
-  width: 80%;
-  max-width: 500px;
-  margin: 0 auto; /* Centre horizontalement */
-  
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  background-color: #2C1E37;
+  border-radius: 45px;
+  width: 800px;
+  height: 800px;
+  justify-content: center;
+  align-items: center;  
+  margin: 0 auto;
+  gap: 40px;  
 }
 
 /* Le titre de la carte */
 .card-title {
-  font-size: 1.4rem;
-  font-weight: 600;
-  margin-bottom: 2rem;
+  color: #ffffff;
+  font-size: 50px;
+  text-align: center;
+  font-weight: bold;
 }
 
 /* Conteneur des flèches + image avatar */
@@ -103,51 +104,94 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
+  gap: 30px;
+  padding-top: 20px;
+  padding-bottom: 50px;
 }
 
 /* Boutons flèches */
+.leftarrowbtn-img{
+  width: 30px;
+  height: 30px;
+  justify-content: center;
+  margin-right: 4px;
+
+}
+
+.rightarrowbtn-img{
+  width: 30px;
+  height: 30px;
+  justify-content: center;
+  margin-left: 4px;
+
+}
+
 .avatar-nav-btn {
-  background-color: #4A3B5A;
+  background-color:#968E9B;
   border: none;
-  border-radius: 50%;
+  border-radius: 70px;
   color: #FFFFFF;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  font-size: 1.2rem;
-  outline: none; /* Pour enlever le focus bleu par défaut */
+  width: 60px;
+  height: 60px;
+  outline: none;
+ 
 }
 
 .avatar-nav-btn:hover {
-  background-color: #6A5580;
+  background-color: #b3abb8;
+  transition: background-color 0.2s; 
+
 }
 
 /* Image de l’avatar */
 .avatar-img {
-  width: 100px;
-  height: auto;
+  width: 250px;
+  height: 250px;
 }
 
 /* Champ texte pour le surnom */
-.nickname-input, .code-input {
-  display: block;
-  margin: 0 auto 0.5rem auto;
-  padding: 0.5rem 1rem;
+.nickname-input{
+  background-color: #968E9B;
+  color: #ffffff;
+  width: 393px;
+  height:93px;
+  margin: 0 auto;
+
+  border: solid;
+  border-color: #FFFFFF;
+  border-width: 10px;
+  border-radius: 30px;
   
-  background-color: #70597A;
+  font-size: 40px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.join-code-container{
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.code-input {
+  background-color: #41344B;
   color: #FFFFFF;
-  
+
+  width: 247px;
+  height:70px;
+
   border: none;
-  border-radius: 8px;
-  
-  font-size: 1rem;
+  border-radius: 20px;
+
+  font-size: 30px;
+  font-weight: bold;
   text-align: center;
 }
 
 .nickname-input:focus, .code-input:focus {
-  outline: 2px solid #AB76F5;
+  outline: solid #9C5EEB;
+  outline-width: 3px;
   outline-offset: 2px;
 }
 
@@ -155,13 +199,13 @@ body {
 .join-button {
   background-color: #9C5EEB;
   color: #FFFFFF;
+  width: 247px;
+  height:70px;
   border: none;
-  border-radius: 8px;
+  border-radius: 20px;
   padding: 0.8rem 2rem;
-  margin: 1rem auto 0 auto;
-  
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 30px;
   font-weight: bold;
   text-transform: uppercase;
   

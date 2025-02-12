@@ -5,35 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>C'était Quand ?</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="stylesheet" href="styles.css">
+    
     <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    
+    <!-- Bootstrap -->
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
+        rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
+        crossorigin="anonymous">
+
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- HOME PAGE -->
     <div id="home" class="container">
-        <div class="logo-container">
-            <img src="img/CetaitQuandLogo.png" alt="Logo C'était quand" class="logo">
+        <img src="img/CetaitQuandLogo.png" alt="Logo C'était quand" class="logo">
+        <div class="menubutton-container">
+            <button class="play-button" onclick="goToSetupPage(true)">Créer</button><button class="play-button" onclick="goToSetupPage(false)">Rejoindre</button>
         </div>
-        
-        <button class="play-button" onclick="goToSetupPage(true)">Créer</button>
-        <button class="play-button" onclick="goToSetupPage(false)">Rejoindre</button>
     </div>
     
     <!-- SETUP PAGE -->
-    <div id="setup" class="page-container">
+    <div id="setup" class="setup-container">
+        <img src="img/CetaitQuandLogo.png" alt="Logo C'était quand" class="logo-watermark">
         <div class="card">
-            <h2 class="card-title">CHOISIS UN AVATAR ET UN SURNOM</h2>
+            <h2 class="card-title">CHOISIS UN AVATAR <br /> ET UN SURNOM</h2>
             
             <div class="avatar-selection">
-                <button class="avatar-nav-btn" onclick="changeAvatar(-1)">&#9664;</button>
+                <button class="avatar-nav-btn" onclick="changeAvatar(-1)"><img src="img/ArrowButtonLeft.png" class="leftarrowbtn-img"/></button>
                 <img id="setup-avatar" src="img/Avatar1.png" alt="Avatar" class="avatar-img">
-                <button class="avatar-nav-btn"onclick="changeAvatar(1)">&#9654;</button>
+                <button class="avatar-nav-btn"onclick="changeAvatar(1)"><img src="img/ArrowButtonRight.png" class="rightarrowbtn-img"/></button>
             </div>
-            
             <input id="setup-playerInput" type="text" class="nickname-input" placeholder="Zezette" value="">
-            <input id="setup-code" type="text" class="code-input" placeholder="Uoaj7" value="">
-            
-            <button id="setup-next" class="join-button" onclick="joinGame()">REJOINDRE</button>
+            <div class="join-code-container">
+                <input id="setup-code" type="text" class="code-input" placeholder="CODE" value=""><button id="setup-next" class="join-button" onclick="joinGame()">REJOINDRE</button>
+            </div>
         </div>
     </div>
     
