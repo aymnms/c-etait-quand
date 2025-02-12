@@ -208,8 +208,6 @@ body {
   font-size: 30px;
   font-weight: bold;
   text-transform: uppercase;
-  
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   transition: background-color 0.3s;
 }
 
@@ -226,49 +224,73 @@ body {
 
 /* Le conteneur global de la page Room */
 .room-container {
-  /* Si tu es resté avec un body en flex height:100vh, tu peux faire un display block */
-  display: flex;
-  flex-direction: column;  /* Empile : header, main, footer */
-  width: 90%;
-  max-width: 1000px;       /* Largeur maximum de la zone */
-  margin: 0 auto;          /* Centre horizontalement si la page est plus large */
-  border-radius: 16px;     /* Pour arrondir l’ensemble du rectangle */
-  overflow: hidden;        /* Pour que les bords arrondis soient nets */
-  
-  /* Couleur d'arrière-plan "enveloppe" : plus foncé ? */
-  background-color: #1F0A33; 
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4); /* Petit effet d'ombre */
+  width: 100%;
+  box-sizing: border-box;
+  display: contents;
 }
-
 /* Header de la room */
 .room-header {
-  background-color: #1F0A33; /* Même couleur que le conteneur ? ou un peu plus sombre si tu veux ? */
-  padding: 1rem 2rem;
+  height: 613px;
+  width: 1158px;
+  align-content: end;
+  padding: 10px;
+  padding-bottom: 20px;
+  border-radius: 30px;
+  background-color: #2C1E37;  /* Même couleur que le conteneur ? ou un peu plus sombre si tu veux ? */
+  margin: 0 auto;
   text-align: center; /* Centrer le titre "ROOM" */
 }
 
 .room-title {
-  font-size: 1.8rem;
-  letter-spacing: 1px;
+  font-size: 50px;
+  font-weight: bold;
+  text-align: center;
 }
 
 /* Bloc principal : on y met un fond plus clair ? */
 .room-main {
-  background-color: #644c9b; /* Par exemple, un violet plus clair que le header */
-  padding: 2rem;
-  border-radius: 16px;       /* L’intérieur a lui aussi des coins arrondis */
-  margin: 1rem;              /* Espace par rapport aux bords du container (header/footer) */
+  background-color: #6B4CA9; 
+  border-radius: 30px;
+  height: 90%;
+  width: 100%; 
+  padding: 10px;
+  padding-top: 10px;
+}
+
+.player-code-container{
+  display: flex;
+  padding-top: 5px;
+  padding-bottom: 10px;
+  justify-content: flex-end;
+}
+
+.code-box {
+  display: flex;
+  background-color: #583E87;
+  border-radius: 30px;
+  padding-left: 15px;
+  padding-right: 15px;
+  justify-self:right;
+  justify-content: center;
+  align-items: center; 
+}
+
+.code-title {
+  padding-top: 5px;
+  font-size: 30px;
+  font-weight: bold;
+  text-align: right;
 }
 
 /* Titre "JOUEUR 4/14" */
 .player-count {
-  font-size: 1.4rem;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-  text-align: left;
 
+  padding-right: 645px;
+  font-size: 40px;
+  font-weight: bold;
+  text-align: left;
+  
   /* Eventuel effet de halo/vibration neon : */
-  text-shadow: 0 0 5px #AB76F5, 0 0 10px #AB76F5;
 }
 
 /* La liste des joueurs : on veut une disposition horizontale */
@@ -283,43 +305,47 @@ body {
 /* Chaque "player" : avatar + surnom */
 .player {
   display: flex;
+  background-color: #583E87;
+  height: 200px;
+  width: 200px;
+  border-radius: 30px;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   text-align: center;     /* Centre le surnom sous l’avatar */
 }
 
 .player-avatar {
-  width: 70px;            /* Ajuste la taille selon ta maquette */
-  height: auto;
-  margin-bottom: 0.5rem;
+  width: 125px;            /* Ajuste la taille selon ta maquette */
+  height: 125px;
 }
 
 .player-name {
-  font-size: 1rem;
-  font-weight: normal;    /* Ou bold, selon le style voulu */
+  font-size: 25px;
+  font-weight: bold;    /* Ou bold, selon le style voulu */
 }
 
 /* Footer : zone du bouton "JOUER" */
 .room-footer {
-  background-color: #1F0A33; /* On reste dans la même couleur de la "card" globale */
-  text-align: center;
-  padding: 1rem 0;
+  display: flex;
+  width: fit-content;
+  block-size: fit-content;
+  padding-top: 40px;
+  margin: 0 auto;
 }
 
 /* Le bouton "JOUER" */
 .room-play-button {
-  background-color: #9C5EEB;
+  background-color: #AD72FE;
   color: #FFFFFF;
   border: none;
-  border-radius: 8px;
-  padding: 0.8rem 2rem;
-  
-  cursor: pointer;
-  font-size: 1.1rem;
+  border-radius: 55px;
+  height: 79px;
+  width: 230px;
+  font-size: 40px;
   font-weight: bold;
   text-transform: uppercase;
-  
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
   transition: background-color 0.3s;
 }
 
