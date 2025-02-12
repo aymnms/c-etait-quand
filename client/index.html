@@ -43,7 +43,7 @@
                 <img id="setup-avatar" src="img/Avatar1.png" alt="Avatar" class="avatar-img">
                 <button class="avatar-nav-btn"onclick="changeAvatar(1)"><img src="img/ArrowButtonRight.png" class="rightarrowbtn-img"/></button>
             </div>
-            <input id="setup-playerInput" type="text" class="nickname-input" placeholder="Zezette" value="">
+            <input id="setup-playerInput" type="text" class="nickname-input" placeholder="SURNOM" value="">
             <div class="join-code-container">
                 <input id="setup-code" type="text" class="code-input" placeholder="CODE" value=""><button id="setup-next" class="join-button" onclick="joinGame()">REJOINDRE</button>
             </div>
@@ -52,23 +52,24 @@
     
     <!-- WAITING PAGE -->
     <div id="waiting" class="room-container">
+        <img src="img/CetaitQuandLogo.png" alt="Logo C'était quand" class="logo-watermark">
         <!-- Header sombre -->
-        <header class="room-header">
-            <h1 id="roomCode" class="room-title">ROOM</h1>
-        </header>
-        
-        <!-- Bloc principal violet clair -->
-        <main class="room-main">
-            <!-- Titre / nb de joueurs -->
-            <h2 id="nbPlayer" class="player-count">JOUEUR 0/10</h2>
-            
-            <div id="playerListWaiting" class="players-list"></div>
-        </main>
-        
+        <div class="room-header">
+            <h1 class="room-title">ROOM</h1>      
+            <!-- Bloc principal violet clair -->
+            <main class="room-main">
+                <!-- Titre / nb de joueurs -->
+                <div class="player-code-container">
+                    <h2 id="nbPlayer" class="player-count">JOUEUR 0/10</h2><div class="code-box"></divlass><h1 id="roomCode" class="code-title">CODE: </h1></div>
+                </div>
+                
+                <div id="playerListWaiting" class="players-list"></div>
+            </main>
+        </div>
         <!-- Footer (bouton "JOUER") -->
-        <footer id="startGame" class="room-footer">
+        <div id="startGame" class="room-footer">
             <button class="room-play-button" onclick="nextRound()">JOUER</button>
-        </footer>
+        </div>
     </div>
     
     <!-- GAME PAGE -->
