@@ -8,7 +8,9 @@ class GameSocketHandler {
 
     handleConnection(socket) {
         socket.on("joinGame", ({ playerName, roomCode }) => {
+        // socket.on("joinGame", ({ playerName, indexAvatar, roomCode }) => {
             this.game.joinGame(socket, playerName, roomCode);
+            // this.game.joinGame(socket, playerName, indexAvatar, roomCode);
         });
 
         socket.on("nextRound", (roomCode) => {

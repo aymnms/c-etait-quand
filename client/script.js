@@ -39,6 +39,7 @@ function joinGame() {
         if (!roomCode) return alert("Entrez un code de room");
     }
     socket.emit("joinGame", { playerName, roomCode });
+    // socket.emit("joinGame", { playerName, indexAvatar, roomCode });
 }
 
 function displayQuestion(question) {
@@ -105,6 +106,27 @@ function displayPlayerList() {
     }
 
     document.getElementById("nbPlayer").innerText = `JOUEUR ${playersName.length}/10`
+}
+
+function changeAvatar(direction) {
+    const avatars = [
+        "Avatar1.png",
+        "Avatar2.png",
+        "Avatar3.png"
+    ];
+
+    let avatar = document.getElementById("setup-avatar");
+    let src = avatar.src.split("/");
+    src = src[src.length - 1];
+    
+    let index = avatars.indexOf(src) + direction;
+    if (index >= avatars.length) {
+        index = 0;
+    } else if (index < 0) {
+        index = avatars.length - 1;
+    }
+
+    avatar.src = "img/" + avatars[index];
 }
 
 // ------- WEBSOCKET ------- //

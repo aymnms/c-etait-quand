@@ -19,15 +19,15 @@
         <button class="play-button" onclick="goToSetupPage(false)">Rejoindre</button>
     </div>
     
-    <!-- SETUP PAGE AYMS-->
+    <!-- SETUP PAGE -->
     <div id="setup" class="page-container">
         <div class="card">
             <h2 class="card-title">CHOISIS UN AVATAR ET UN SURNOM</h2>
             
             <div class="avatar-selection">
-                <button class="avatar-nav-btn">&#9664;</button>
-                <img src="images/avatar1.png" alt="Avatar" class="avatar-img">
-                <button class="avatar-nav-btn">&#9654;</button>
+                <button class="avatar-nav-btn" onclick="changeAvatar(-1)">&#9664;</button>
+                <img id="setup-avatar" src="img/Avatar1.png" alt="Avatar" class="avatar-img">
+                <button class="avatar-nav-btn"onclick="changeAvatar(1)">&#9654;</button>
             </div>
             
             <input id="setup-playerInput" type="text" class="nickname-input" placeholder="Zezette" value="">
@@ -37,6 +37,7 @@
         </div>
     </div>
     
+    <!-- WAITING PAGE -->
     <div id="waiting" class="room-container">
         <!-- Header sombre -->
         <header class="room-header">
