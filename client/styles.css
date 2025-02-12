@@ -450,6 +450,87 @@ body {
   background-color: #AB76F5;
 }
 
+/* ===================================================================== */
+/* STYLES SPÉCIFIQUES À LA PAGE RÉSULTATS                                */
+/* (en plus de .card-front, .card-header, .card-inner, .card-footer)     */
+/* ===================================================================== */
+
+/* On peut cibler le bloc .card-inner de cette page via .results-content si besoin */
+.results-content {
+  text-align: center;
+}
+
+/* La date finale en grand (ex. 1440) */
+.final-date {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* Le bloc encadré pour la description */
+.explanation-box {
+  background-color: #5D3B7F; /* Ou autre violet plus clair */
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 0 6rem 1.5rem 6rem; /* Espace sous le bloc */
+  
+  /* Le texte reste en blanc hérité, si body { color: #fff; } */
+}
+
+/* La rangée de cartes joueurs */
+.players-row {
+  display: flex;
+  flex-wrap: wrap;          /* Permet de passer à la ligne si trop d'éléments */
+  gap: 1rem;                /* Espace horizontal/vertical entre les cartes */
+  justify-content: center;  /* Centre le tout horizontalement */
+}
+
+/* Chaque "carte joueur" */
+.player-card {
+  background-color: #8D69C7; /* Un violet un peu différent, ajustable selon ta maquette */
+  width: 80px;              /* Ajuste la largeur selon la place voulue */
+  min-height: 120px;        /* Hauteur approximative ; ajuste selon la maquette */
+  border-radius: 12px;
+  text-align: center;
+  padding: 0.5rem;
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly; /* Espace vertical entre les éléments */
+  align-items: center;
+}
+
+/* On peut distinguer un "slot" vide */
+.player-card.empty-slot {
+  opacity: 0.3;       /* On le rend semi-transparent */
+  /* on peut ajouter un border dashed, etc. si souhaité */
+  border: 2px dashed #ccc;
+}
+
+/* La date proposée (ex. 1950) */
+.guessed-date {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+/* L'avatar dans la player-card */
+.player-avatar {
+  width: 40px;
+  height: auto;
+  border-radius: 50%; /* Par ex., si tu veux un avatar rond */
+}
+
+/* Le nom du joueur (ex. "Zezette") */
+.player-name {
+  font-size: 0.8rem;
+  margin-top: 0.2rem;
+}
+
+/* Le score du joueur (ex. "5") */
+.player-score {
+  font-size: 0.8rem;
+  font-weight: bold;
+}
 
 
 /* CSS ZEZE */

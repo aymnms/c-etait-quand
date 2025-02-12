@@ -89,11 +89,11 @@ function updateHostDisplay() {
     if (myself.name == party.playerHostName) {
         if (document.getElementById("waiting").style.display === "block") {
             document.getElementById("startGame").style.display = "block";
-            //document.getElementById("next").style.display = "none"; // QUAND RESULT SERA OK
+            document.getElementById("next").style.display = "none";
         }
         else if (document.getElementById("results").style.display === "block") {
             document.getElementById("startGame").style.display = "none";
-            //document.getElementById("next").style.display = "block"; // QUAND RESULT SERA OK
+            document.getElementById("next").style.display = "block";
         }
     }
 }
@@ -158,25 +158,25 @@ socket.on("timerUpdate", (timeLeft) => {
     timerElement.innerText = timeLeft;
 });
 
-socket.on("roundResult", ({ winners, isPerfectWinners, explanation, scores, answers }) => {
+socket.on("roundResult", ({ solution, explanation, scores, answers }) => {
     updateDisplay("results");
-    let roundResultMessage = `${winners.join(",")} gagne(nt)`;
-    roundResultMessage += isPerfectWinners ? ` 3 points !` : ` 1 point !`;
-    document.getElementById("roundResult").innerText = roundResultMessage;
+
+    document.getElementById("solution").innerText = solution;
     document.getElementById("explanation").innerText = explanation;
 
-    let answersTable = document.getElementById("currentAnswers");
-    answersTable.innerHTML = "<tr><th>Joueurs</th><th>Réponses</th></tr>";
-    Object.keys(answers).forEach(player => {
-        console.log(player + " " + answers[player]);
-        answersTable.innerHTML += `<tr><td>${player}</td><td>${answers[player]}</td></tr>`;
-    });
-
-    let currentScoresTable = document.getElementById("currentScores");
-    currentScoresTable.innerHTML = "<tr><th>Joueur</th><th>Score</th></tr>";
-    Object.keys(scores).forEach(player => {
-        currentScoresTable.innerHTML += `<tr><td>${player}</td><td>${scores[player]}</td></tr>`;
-    });
+    let playerCards = document.getElementById("player-cards");
+    playerCards.innerHTML = "";
+    for (let localPlayer of party.players) {
+        const answer = answers[localPlayer.name] ? answers[localPlayer.name] : "❌";
+        playerCards.innerHTML += `
+        <div class="player-card">
+            <p class="guessed-date">${answer}</p>
+            <img src="img/${avatars[localPlayer.avatar]}" alt="${localPlayer.name}" class="player-avatar">
+            <p class="player-name">${localPlayer.name}</p>
+            <p class="player-score">${scores[localPlayer.name]}</p>
+        </div>
+        `;
+    }
     updateHostDisplay();
 });
 

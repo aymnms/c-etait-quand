@@ -99,13 +99,23 @@
 
     
     <!-- RESULTS PAGE -->
-    <div id="results">
-        <h2 id="roundResult"></h2>
-        <p id="explanation"></p>
-        <table border="1" id="currentAnswers"></table>
-        <br />
-        <table border="1" id="currentScores"></table>
-        <button id="next" onclick="nextRound()">Suivant</button>
+    <div id="results" class="game-page">
+        <div class="card-front">
+          <div class="card-header">
+            <h1>RÉSULTATS</h1>
+          </div>
+          <div class="card-inner results-content">
+            <div class="explanation-box">
+              <h2 id="solution" class="final-date"></h2>
+              <p id="explanation"></p>
+            </div>
+            <div id=player-cards class="players-row">
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button id="next" class="validate-button" onclick="nextRound()">Question suivante</button>
+        </div>
     </div>
     
     <!-- ENDGAME PAGE -->
