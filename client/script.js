@@ -76,12 +76,14 @@ function displayQuestion(question) {
 }
 
 function submitAnswer() {
-    let answer = parseInt(document.getElementById("answer").value);
+    let answerElement = document.getElementById("answer");
+    let answer = parseInt(answerElement.value);
     if (isNaN(answer)) {
         createToast("La réponse n'est pas un nombre.");
         return;
     }
     socket.emit("submitAnswer", { roomCode: party.roomCode, playerName: myself.name, answer });
+    answerElement.value = "";
 }
 
 function nextRound() {
