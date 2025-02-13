@@ -60,11 +60,11 @@ function changeAvatar(direction) {
 
 function joinGame() {
     myself.name = document.getElementById("setup-playerInput").value.trim();
-    if (!myself.name) return alert("Entrez un nom de joueur"); 
+    if (!myself.name) return createToast("Entrez un nom de joueur", "error");
     roomCodeElement = document.getElementById("setup-code");
     if (roomCodeElement.style.display !== "none") {
         party.roomCode = roomCodeElement.value.trim();
-        if (!party.roomCode) return alert("Entrez un code de room");
+        if (!party.roomCode) return createToast("Entrez un code de room", "error");
     }
     socket.emit("joinGame", { playerName: myself.name, indexAvatar: myself.indexAvatar, roomCode: party.roomCode });
 }
@@ -136,6 +136,60 @@ function displayPlayerList() {
     document.getElementById("nbPlayer").innerText = `JOUEUR ${party.players.length}/10`
 }
 
+
+function createToast(message, type = "info") {
+
+    colorClass = type === 'success' ? 'text-bg-success' : type === 'error' ? 'text-bg-danger' : 'text-bg-secondary';
+
+    // colorClasssss = [
+    //     'text-bg-primary',
+    //     'text-bg-danger',
+    //     'text-bg-info',
+    //     'text-bg-success',
+    //     'text-bg-secondary',
+    // ];
+
+    // 1) Crée l'élément principal
+    const toastEl = document.createElement('div');
+    
+    // 2) Les classes Bootstrap nécessaires
+    toastEl.classList.add('toast', 'align-items-center', colorClass, 'border-0', 'fade');
+  
+    // 3) Attributs
+    toastEl.setAttribute('role', 'alert');
+    toastEl.setAttribute('aria-live', 'assertive');
+    toastEl.setAttribute('aria-atomic', 'true');
+    // Durée avant auto-hide (ms)
+    toastEl.dataset.bsAutohide = 'true';
+    toastEl.dataset.bsDelay = '5000';
+
+    // 4) InnerHTML : structure du toast
+    toastEl.innerHTML = `
+      <div class="d-flex">
+        <div class="toast-body">
+          ${message}
+        </div>
+        <button
+          type="button"
+          class="btn-close btn-close-white me-2 m-auto"
+          data-bs-dismiss="toast"
+          aria-label="Close"
+        ></button>
+      </div>
+    `;
+  
+    // 5) Place-le dans le conteneur
+    const toastContainer = document.getElementById('toastContainer');
+    toastContainer.appendChild(toastEl);
+    
+    // 6) Initialise le toast
+    const bsToast = new bootstrap.Toast(toastEl);
+    
+    // 7) Affiche-le
+    bsToast.show();
+  }
+
+
 // ------- WEBSOCKET ------- //
 
 socket.on("roomJoined", (code, players, host) => {
@@ -191,12 +245,12 @@ socket.on("gameEnded", ({ winners, scores, logs }) => {
     console.log(logs);
 });
 
-socket.on("errorMessage", (message) => {
-    alert(message);
+socket.on("message", (message, type) => {
+    createToast(message, type);
 });
 
 socket.on("playerDisconnected", (player, host) => {
-    alert(player + " vient de quitter la partie");
+    createToast(`${player} vient de quitter la room`, "info");
     for (let localPlayer of party.players) {
         if (localPlayer.name === player) {
             party.players.splice(party.players.indexOf(localPlayer), 1);
@@ -207,7 +261,7 @@ socket.on("playerDisconnected", (player, host) => {
         party.playerHostName = host;
         if (party.playerHostName === myself.name){
             updateHostDisplay();
-            alert("Vous êtes devenu le nouvel hôte !");
+            create("Vous êtes devenu le nouvel hôte !", "info");
         }
     }
 });

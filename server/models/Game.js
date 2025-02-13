@@ -15,28 +15,30 @@ class Game {
 
         const room = this.roomManager.getRoom(roomCode);
         if (!room) {
-            socket.emit("errorMessage", "Une erreur s'est produite lors de la connexion à la room.");
+            socket.emit("message", "Une erreur s'est produite lors de la connexion à la room.", "error");
             return;
         }
         if (room.players.size >= 10) {
             console.log("LIMITE");
-            socket.emit("errorMessage", "La limite de joueur pour cette room a été atteinte.");
+            socket.emit("message", "La limite de joueur pour cette room a été atteinte.", "error");
             return;
         }
         if (room.players.has(playerName)) {
             console.log("DEJA PRIS");
-            socket.emit("errorMessage", "Ce surnom est déjà utilisé.");
+            socket.emit("message", "Ce surnom est déjà utilisé.", "error");
             return;
         }
         if (playerName.length > 16) {
             console.log("TROP LONG");
-            socket.emit("errorMessage", "Ce surnom contient trop de caractère.");
+            socket.emit("message", "Ce surnom contient trop de caractère.", "error");
             return;
         }
         room.addPlayer(socket.id, playerName, indexAvatar);
         socket.join(roomCode);
-        
+
         console.log(`${playerName} a rejoint la salle ${roomCode}`);
+        socket.emit("message", `Vous avez rejoint la salle ${roomCode}`, "success");
+        this.io.to(roomCode).emit("message", `${playerName} a rejoint la salle`, "info");
         this.io.to(roomCode).emit("roomJoined", roomCode, [...room.players.values()], room.host);
     }
 
@@ -60,7 +62,7 @@ class Game {
     submitAnswer(roomCode, playerName, answer) {
         const room = this.roomManager.getRoom(roomCode);
         if (!room) {
-            socket.emit("errorMessage", "La salle n'existe pas !");
+            socket.emit("message", "La salle n'existe pas !", "error");
             return;
         }
         room.submitAnswer(playerName, answer);

@@ -558,6 +558,11 @@ body {
   font-weight: bold;
 }
 
+/* TOAST */
+
+#toastContainer .toast {
+  margin-bottom: 0.5rem; /* Espace de 0.5rem sous chaque toast */
+}
 
 /* CSS ZEZE */
 
