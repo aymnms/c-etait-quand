@@ -145,7 +145,7 @@ socket.on("roomJoined", (code, players, host) => {
     updateDisplay("waiting");
     updateHostDisplay();
     displayPlayerList();
-    document.getElementById("roomCode").innerText = `ROOM ${code}`;
+    document.getElementById("roomCode").innerText = `CODE: ${code}`;
 });
 
 socket.on("gameStarted", (question) => {
