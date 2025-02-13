@@ -8,10 +8,31 @@ class Game {
     }
 
     joinGame(socket, playerName, indexAvatar, roomCode) {
-        if (!roomCode) roomCode = this.roomManager.createRoom();
+        if (!roomCode) {
+            this.roomManager.cleanEmptyRooms();
+            roomCode = this.roomManager.createRoom();
+        }
 
         const room = this.roomManager.getRoom(roomCode);
-        if (!room) return;
+        if (!room) {
+            socket.emit("errorMessage", "Une erreur s'est produite lors de la connexion à la room.");
+            return;
+        }
+        if (room.players.size >= 10) {
+            console.log("LIMITE");
+            socket.emit("errorMessage", "La limite de joueur pour cette room a été atteinte.");
+            return;
+        }
+        if (room.players.has(playerName)) {
+            console.log("DEJA PRIS");
+            socket.emit("errorMessage", "Ce surnom est déjà utilisé.");
+            return;
+        }
+        if (playerName.length > 16) {
+            console.log("TROP LONG");
+            socket.emit("errorMessage", "Ce surnom contient trop de caractère.");
+            return;
+        }
         room.addPlayer(socket.id, playerName, indexAvatar);
         socket.join(roomCode);
         
