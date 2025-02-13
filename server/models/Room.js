@@ -40,6 +40,14 @@ class Room {
         }
     }
 
+    allAnswersReceived() {
+        let isDone = true;
+        this.players.forEach((player, playerName) => {
+            if (!this.currentAnswers.get(playerName)) isDone = false;
+        });
+        return isDone;
+    }
+
     resetAnswers() {
         this.currentAnswers.clear();
     }

@@ -75,9 +75,12 @@ function displayQuestion(question) {
     document.getElementById("questionImage").alt=question.invention;
 }
 
-function validateAnswers() {
+function submitAnswer() {
     let answer = parseInt(document.getElementById("answer").value);
-    if (isNaN(answer)) return;
+    if (isNaN(answer)) {
+        createToast("La réponse n'est pas un nombre.");
+        return;
+    }
     socket.emit("submitAnswer", { roomCode: party.roomCode, playerName: myself.name, answer });
 }
 
@@ -106,6 +109,7 @@ function updateDisplay(step) {
         "setup": "none",
         "waiting": "none",
         "game": "none",
+        "spinner": "none",
         "results": "none",
         "endGame": "none",
     }
@@ -135,7 +139,6 @@ function displayPlayerList() {
 
     document.getElementById("nbPlayer").innerText = `JOUEUR ${party.players.length}/10`
 }
-
 
 function createToast(message, type = "info") {
 
@@ -210,6 +213,11 @@ socket.on("gameStarted", (question) => {
 socket.on("timerUpdate", (timeLeft) => {
     const timerElement = document.getElementById("timer");
     timerElement.innerText = timeLeft;
+});
+
+socket.on("askAnswers", () => {
+    submitAnswer();
+    updateDisplay("spinner");
 });
 
 socket.on("roundResult", ({ solution, explanation, scores, answers }) => {

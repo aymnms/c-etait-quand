@@ -58,7 +58,7 @@ class Game {
             this.startTimer(roomCode);
         }
     }
-
+    
     submitAnswer(roomCode, playerName, answer) {
         const room = this.roomManager.getRoom(roomCode);
         if (!room) {
@@ -66,8 +66,12 @@ class Game {
             return;
         }
         room.submitAnswer(playerName, answer);
+        
+        if (room.allAnswersReceived()) { // check si tt players ont envoyé réponses
+            this.endRound(roomCode);
+        }
     }
-
+    
     startTimer(roomCode) {
         let timeLeft = process.env.TIMER;
         const room = this.roomManager.getRoom(roomCode);
@@ -76,7 +80,9 @@ class Game {
             this.io.to(room.code).emit("timerUpdate", timeLeft);
             console.log(`⏳ Timer ${room.code}: ${timeLeft} sec`);
             
-            if (timeLeft <= 0) {
+            if (timeLeft == 0) {
+                this.io.to(roomCode).emit("askAnswers");
+            }else if (timeLeft <= -5) {
                 this.stopTimer(roomCode);
                 this.endRound(roomCode);
             }
@@ -94,10 +100,10 @@ class Game {
     }
 
     endRound(roomCode) {
+        this.stopTimer(roomCode);
+
         const room = this.roomManager.getRoom(roomCode);
         if (!room) return;
-
-        this.stopTimer(roomCode);
 
         const question = this.roomManager.getQuestion(room.currentQuestionIndex);
 

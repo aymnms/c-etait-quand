@@ -75,29 +75,34 @@
     <!-- GAME PAGE -->
     <!-- Le grand rectangle violet -->
     <div id="game" class="game-page">
-        <div class="card-front">
-            <!-- Bandeau noir du haut (titre principal) -->
-            <div class="card-header">
-              <h1>C'ÉTAIT QUAND?</h1>
-            </div>
+      <div class="card-front">
+          <!-- Bandeau noir du haut (titre principal) -->
+          <div class="card-header">
+            <h1>C'ÉTAIT QUAND?</h1>
+          </div>
+          
+          <!-- Le rectangle "intérieur" dans la carte -->
+          <div class="card-inner">
+            <h2 id="question" class="event-title">L'IMPRIMERIE</h2>
+            <h3>Temps restant : <span id="timer">30</span> secondes</h3>
             
-            <!-- Le rectangle "intérieur" dans la carte -->
-            <div class="card-inner">
-              <h2 id="question" class="event-title">L'IMPRIMERIE</h2>
-              <h3>Temps restant : <span id="timer">30</span> secondes</h3>
-              
-              <div class="image-wrapper">
-                <img id="questionImage" src="" alt="">
-              </div>
+            <div class="image-wrapper">
+              <img id="questionImage" src="" alt="">
             </div>
-        </div>
-        <!-- Bandeau noir du bas (champ date + bouton) -->
-        <div class="card-footer">
-          <input id="answer" type="text" class="date-input" placeholder="DATE">
-          <button class="validate-button" onclick="validateAnswers()">VALIDER</button>
-        </div>
+          </div>
       </div>
+      <!-- Bandeau noir du bas (champ date + bouton) -->
+      <div class="card-footer">
+        <input id="answer" type="text" class="date-input" placeholder="DATE">
+      </div>
+    </div>
 
+    <!-- SPINNER PAGE -->
+    <div class="d-flex justify-content-center">
+      <div id="spinner" class="spinner-border text-light" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
     
     <!-- RESULTS PAGE -->
     <div id="results" class="game-page">
