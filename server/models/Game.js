@@ -54,8 +54,8 @@ class Game {
             this.roomManager.deleteRoom(roomCode);
         } else {
             this.roomManager.randomQuestionIndex(roomCode);
-            this.io.to(roomCode).emit("gameStarted", this.roomManager.getQuestion(room.currentQuestionIndex));
             this.startTimer(roomCode);
+            this.io.to(roomCode).emit("gameStarted", this.roomManager.getQuestion(room.currentQuestionIndex));
         }
     }
     
@@ -76,18 +76,21 @@ class Game {
         let timeLeft = process.env.TIMER;
         const room = this.roomManager.getRoom(roomCode);
         
+        this.io.to(room.code).emit("timerUpdate", timeLeft);
+        console.log(`⏳ Timer ${room.code}: ${timeLeft} sec`);
+        
         this.timers.set(roomCode, setInterval(() => {
+            timeLeft--;
             this.io.to(room.code).emit("timerUpdate", timeLeft);
             console.log(`⏳ Timer ${room.code}: ${timeLeft} sec`);
-            
+
             if (timeLeft == 0) {
                 this.io.to(roomCode).emit("askAnswers");
-            }else if (timeLeft <= -5) {
+            } else if (timeLeft <= -5) {
                 this.stopTimer(roomCode);
                 this.endRound(roomCode);
+                timeLeft = process.env.TIMER;
             }
-            
-            timeLeft--;
         }, 1000));
     }
 
