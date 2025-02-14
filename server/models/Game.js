@@ -48,7 +48,7 @@ class Game {
 
         const winners = room.getWinners();
         if (winners.length) { // FIN DE GAME
-            this.io.to(roomCode).emit("gameEnded", { winners, scores: room.getScores(), logs: room.logs });
+            this.io.to(roomCode).emit("gameEnded", { logs: room.logs });
             this.io.socketsLeave(roomCode);
             this.io.in(roomCode).disconnectSockets(true);
             this.roomManager.deleteRoom(roomCode);

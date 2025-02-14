@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>C'était Quand ?</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    
+
     <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
 
     <!-- Google Fonts -->
@@ -13,7 +13,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    
     <!-- Bootstrap -->
     <link 
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
@@ -64,7 +63,7 @@
                 <div class="player-code-container">
                     <h2 id="nbPlayer" class="player-count">JOUEUR 0/10</h2><div class="code-box"></divlass><h1 id="roomCode" class="code-title">CODE: </h1></div>
                 </div>
-                
+
                 <div id="playerListWaiting" class="players-list"></div>
             </main>
         </div>
@@ -73,7 +72,7 @@
             <button class="room-play-button" onclick="nextRound()">JOUER</button>
         </div>
     </div>
-    
+
     <!-- GAME PAGE -->
     <!-- Le grand rectangle violet -->
     <div id="game" class="game-page">
@@ -82,7 +81,7 @@
           <div class="card-header">
             <h1>C'ÉTAIT QUAND?</h1>
           </div>
-          
+
           <!-- Le rectangle "intérieur" dans la carte -->
           <div class="card-inner">
             <h2 id="question" class="event-title">L'IMPRIMERIE</h2>
@@ -105,7 +104,7 @@
         <span class="visually-hidden">Loading...</span>
       </div>
     </div>
-    
+
     <!-- RESULTS PAGE -->
     <div id="results" class="game-page">
         <div class="card-front">
@@ -125,13 +124,28 @@
           <button id="next" class="validate-button" onclick="nextRound()">Question suivante</button>
         </div>
     </div>
-    
+
     <!-- ENDGAME PAGE -->
-    <div id="endGame" class="hidden">
-        <h1>Partie terminée !</h1>
-        <button class="avatar-nav-btn back-button" onclick="back('endGame')"><img src="img/ArrowButtonLeft.png" class="leftarrowbtn-img"/></button>
-        <table border="1" id="finalScores"></table>
-        <h2 id="winner"></h2>
+    <div id="endGame" class="room-container">
+      <!-- Logo en filigrane ou autre si tu veux -->
+      <img src="img/CetaitQuandLogo.png" alt="Logo C'était quand" class="logo-watermark">
+      
+      <!-- Header sombre -->
+      <div class="room-header">
+        <h1 class="room-title">GAGNANTS</h1>
+        
+        <!-- Zone principale en violet clair -->
+        <main class="room-main">
+          <div id="playerListEndGame" class="players-list winners-list"></div>
+        </main>
+      </div>
+      
+      <!-- Footer : bouton REJOUER -->
+      <div class="room-footer">
+        <button class="room-play-button" onclick="back('endGame')">
+          REJOUER
+        </button>
+      </div>
     </div>
 
     <!-- Conteneur pour le toast -->
@@ -141,7 +155,7 @@
       class="position-fixed bottom-0 end-0 p-3"
       style="z-index: 9999"
     ></div>
-    
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="script.js"></script>
 </body>

@@ -131,6 +131,44 @@ function updateDisplay(step) {
     }
 }
 
+function displayPlayerListEndGame() {
+    console.log(party.players);
+    
+    let sortPlayerList = party.players;
+    sortPlayerList.sort((a, b) => b.score - a.score);
+    
+    let playerListElement = document.getElementById("playerListEndGame");
+    let listElement = "";
+    for (const player of sortPlayerList) {
+        let index = sortPlayerList.indexOf(player) + 1;
+        if (index == 1) {
+            listElement += `<div class="player player-first">`;
+        } else if (index == 2) {
+            listElement += `<div class="player player-second">`;
+        } else if (index == 3) {
+            listElement += `<div class="player player-third">`;
+        } else {
+            listElement += `<div class="player">`;
+        }
+
+        if (index == 1) {
+            listElement += `<div class="player-rank">1er</div>`;
+        } else {
+            listElement += `<div class="player-rank">${index}e</div>`;
+        }
+        listElement += `<img src="img/${avatars[player.avatar]}" alt="${player.name}" class="player-avatar-endgame">
+            <div class="player-score-endgame">${player.score}</div>
+            <p class="player-name-endgame">${player.name}</p>
+        </div>`;
+    }
+    console.log(party.players.length);
+    
+    for (let i = 0; i < 10 - party.players.length; i++) {        
+        listElement += `<div class="player player-empty-slot"></div>`;
+    }
+    playerListElement.innerHTML = listElement;
+}
+
 function displayPlayerList() {
     const HtmlList = [
         document.getElementById("playerListWaiting"),
@@ -139,15 +177,15 @@ function displayPlayerList() {
     let listElement = ""
     for (const player of party.players) {
         listElement += `<div class="player">
-            <img src="img/${avatars[player.avatar]}" alt="Avatar ${player.name}" class="player-avatar">
-            <p class="player-name">${player.name}</p>
-        </div>`
+            <img src="img/${avatars[player.avatar]}" alt="Avatar ${player.name}" class="player-avatar-waiting">
+            <p class="player-name-waiting">${player.name}</p>
+        </div>`;
     }
     for (const HtmlElement of HtmlList) {
         HtmlElement.innerHTML = listElement;
     }
 
-    document.getElementById("nbPlayer").innerText = `JOUEUR ${party.players.length}/10`
+    document.getElementById("nbPlayer").innerText = `JOUEUR ${party.players.length}/10`;
 }
 
 function createToast(message, type = "info") {
@@ -255,12 +293,13 @@ socket.on("roundResult", ({ solution, explanation, scores, answers }) => {
     let playerCards = document.getElementById("player-cards");
     playerCards.innerHTML = "";
     for (let localPlayer of party.players) {
+        localPlayer.score = scores[localPlayer.name];
         const answer = answers[localPlayer.name] ? answers[localPlayer.name] : "❌";
         playerCards.innerHTML += `
         <div class="player-card">
             <p class="guessed-date">${answer}</p>
-            <img src="img/${avatars[localPlayer.avatar]}" alt="${localPlayer.name}" class="player-avatar">
-            <p class="player-name">${localPlayer.name}</p>
+            <img src="img/${avatars[localPlayer.avatar]}" alt="${localPlayer.name}" class="player-avatar-results">
+            <p class="player-name">${localPlayer.name}</p> 
             <p class="player-score">${scores[localPlayer.name]}</p>
         </div>
         `;
@@ -268,14 +307,9 @@ socket.on("roundResult", ({ solution, explanation, scores, answers }) => {
     updateHostDisplay();
 });
 
-socket.on("gameEnded", ({ winners, scores, logs }) => {
+socket.on("gameEnded", ({ logs }) => {
     updateDisplay("endGame");
-    document.getElementById("winner").innerText = `Gagnants : ${winners.join(", ")}`;
-    let finalScoresTable = document.getElementById("finalScores");
-    finalScoresTable.innerHTML = "<tr><th>Joueurs</th><th>Scores</th></tr>";
-    Object.keys(scores).forEach(player => {
-        finalScoresTable.innerHTML += `<tr><td>${player}</td><td>${scores[player]}</td></tr>`;
-    });
+    displayPlayerListEndGame();
     resetParty();
     console.log(logs);
 });

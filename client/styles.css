@@ -230,7 +230,7 @@ body {
 }
 /* Header de la room */
 .room-header {
-  height: 613px;
+  height: 565px;
   width: 1158px;
   align-content: end;
   padding: 10px;
@@ -251,7 +251,7 @@ body {
 .room-main {
   background-color: #6B4CA9; 
   border-radius: 30px;
-  height: 90%;
+  height: 89%;
   width: 100%; 
   padding: 10px;
   padding-top: 10px;
@@ -315,14 +315,15 @@ body {
   text-align: center;     /* Centre le surnom sous l’avatar */
 }
 
-.player-avatar {
+.player-avatar-waiting {
   width: 125px;            /* Ajuste la taille selon ta maquette */
   height: 125px;
 }
 
-.player-name {
-  font-size: 25px;
+.player-name-waiting {
+  font-size: 1.5rem;
   font-weight: bold;    /* Ou bold, selon le style voulu */
+  margin: 0.2rem 0;
 }
 
 /* Footer : zone du bouton "JOUER" */
@@ -516,7 +517,7 @@ body {
   background-color: #8D69C7; /* Un violet un peu différent, ajustable selon ta maquette */
   width: 80px;              /* Ajuste la largeur selon la place voulue */
   min-height: 120px;        /* Hauteur approximative ; ajuste selon la maquette */
-  border-radius: 12px;
+  border-radius: 25px;
   text-align: center;
   padding: 0.5rem;
   
@@ -537,25 +538,27 @@ body {
 .guessed-date {
   font-weight: bold;
   font-size: 0.9rem;
+  margin: 0;
 }
 
 /* L'avatar dans la player-card */
-.player-avatar {
-  width: 40px;
+.player-avatar-results {
+  width: 70px;
   height: auto;
   border-radius: 50%; /* Par ex., si tu veux un avatar rond */
 }
 
 /* Le nom du joueur (ex. "Zezette") */
-.player-name {
-  font-size: 0.8rem;
-  margin-top: 0.2rem;
+.player-name-results {
+  font-size: 1.1rem;
+  margin: 0;
 }
 
 /* Le score du joueur (ex. "5") */
 .player-score {
-  font-size: 0.8rem;
+  font-size: 2.2rem;
   font-weight: bold;
+  margin: 0;
 }
 
 /* TOAST */
@@ -570,6 +573,124 @@ body {
   position: absolute;
   top: 45px;
   left: 45px;
+}
+
+/* ====================== PAGE "WINNER" ========================== */
+
+/*
+  .room-container, .room-header, .room-main, .room-footer, 
+  .player, .player-avatar, .player-name, etc.
+  sont déjà définies dans ton code "WAITING" actuel.
+  
+  On va juste adapter quelques ajouts spécifiques au podium 
+  et à l'effet "cases vides en pointillé".
+*/
+
+/* La liste des gagnants (on veut une grille 2 lignes x 4 colonnes) */
+.winners-list {
+  /* Pour faire une grille : 2 lignes x 4 colonnes */
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-rows: 220px;  /* ou "200px" selon ton design */
+  grid-gap: 1rem;
+  justify-items: center;  /* centre chaque cellule horizontalement */
+  align-items: center;    /* centre verticalement */
+}
+
+/* Podium : 1er, 2e, 3e => bordure de couleur */
+.player-rank {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: #ffffff; /* Or, à adapter */
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.player-first .player-rank {
+  color: #FFD700;
+}
+
+.player-second .player-rank {
+  color: #C0C0C0;
+}
+
+.player-third .player-rank {
+  color: #CD7F32;
+}
+
+/* On va devoir positionner ce rank => 
+   => le container ".player" doit être en position: relative 
+      pour que .player-rank s'affiche dedans sans tout casser.
+   => on l'ajoute plus bas 
+*/
+.player {
+  position: relative; /* pour .player-rank position:absolute */
+}
+
+/* 1er : cadre orange, p.ex. #FFA500 */
+.player-first {
+  border: 5px solid #FFA500;
+}
+
+/* 2e : cadre gris clair, p.ex. #C0C0C0 */
+.player-second {
+  border: 5px solid #C0C0C0;
+}
+
+/* 3e : cadre bronze, p.ex. #CD7F32, ou orange plus foncé */
+.player-third {
+  border: 5px solid #CD7F32;
+}
+
+/* Score (cercle noir, texte blanc) */
+.player-score-endgame {
+  font-size: 0.8rem;
+  font-weight: bold;
+  width: 35px;
+  height: 35px;
+  background-color: #1F0A33; /* noir / violet foncé */
+  color: #FFFFFF;
+  border-radius: 50%;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 auto 5px auto; /* centre horizontalement, marge en bas */
+}
+
+/* Slots vides (pointillés, plus clairs) */
+.player-empty-slot {
+  border: 3px dashed #BDA2E0; /* un violet clair/désaturé */
+  opacity: 0.5;              /* effet atténué */
+}
+
+/* .player */
+
+.player-avatar-endgame {
+  width: 125px;            /* Ajuste la taille selon ta maquette */
+  height: 125px;
+}
+
+.player-name-endgame {
+  font-size: 1.5rem;
+  font-weight: bold;    /* Ou bold, selon le style voulu */
+  margin: 0.2rem 0;
+}
+
+.player-first .player-name-endgame {
+  color: #FFD700;
+}
+
+.player-second .player-name-endgame {
+  color: #C0C0C0;
+}
+
+.player-third .player-name-endgame {
+  color: #CD7F32;
 }
 
 /* CSS ZEZE */
