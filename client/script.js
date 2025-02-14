@@ -170,20 +170,18 @@ function displayPlayerListEndGame() {
 }
 
 function displayPlayerList() {
-    const HtmlList = [
-        document.getElementById("playerListWaiting"),
-        // document.getElementById("playerListGame")
-    ];
-    let listElement = ""
+    let playerListElement = document.getElementById("playerListWaiting");
+    let listElement = "";
     for (const player of party.players) {
         listElement += `<div class="player">
             <img src="img/${avatars[player.avatar]}" alt="Avatar ${player.name}" class="player-avatar-waiting">
             <p class="player-name-waiting">${player.name}</p>
         </div>`;
     }
-    for (const HtmlElement of HtmlList) {
-        HtmlElement.innerHTML = listElement;
+    for (let i = 0; i < 10 - party.players.length; i++) {
+        listElement += `<div class="player player-empty-slot"></div>`;
     }
+    playerListElement.innerHTML = listElement;
 
     document.getElementById("nbPlayer").innerText = `JOUEUR ${party.players.length}/10`;
 }

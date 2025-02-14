@@ -229,8 +229,8 @@ body {
   display: contents;
 }
 /* Header de la room */
-.room-header {
-  height: 565px;
+.room-header-waiting {
+  height: 638px;
   width: 1158px;
   align-content: end;
   padding: 10px;
@@ -248,10 +248,10 @@ body {
 }
 
 /* Bloc principal : on y met un fond plus clair ? */
-.room-main {
+.room-main-waiting {
   background-color: #6B4CA9; 
   border-radius: 30px;
-  height: 89%;
+  height: 90.4%;
   width: 100%; 
   padding: 10px;
   padding-top: 10px;
@@ -294,12 +294,14 @@ body {
 }
 
 /* La liste des joueurs : on veut une disposition horizontale */
+/*  CEST UNIQUEMENT POUR WAITING */
 .players-list {
-  display: flex;
-  gap: 2rem;               /* Espace entre chaque joueur */
-  flex-wrap: wrap;         /* Au cas où il y a plus de 4, ça passe à la ligne */
-  justify-content: flex-start;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-rows: 220px;
+  grid-gap: 1rem;
+  justify-items: center;  /* centre chaque cellule horizontalement */
+  align-items: center;    /* centre verticalement */
 }
 
 /* Chaque "player" : avatar + surnom */
@@ -586,8 +588,31 @@ body {
   et à l'effet "cases vides en pointillé".
 */
 
+/* Header de la room */
+.room-header-endgame {
+  height: 565px;
+  width: 1158px;
+  align-content: end;
+  padding: 10px;
+  padding-bottom: 20px;
+  border-radius: 30px;
+  background-color: #2C1E37;  /* Même couleur que le conteneur ? ou un peu plus sombre si tu veux ? */
+  margin: 0 auto;
+  text-align: center; /* Centrer le titre "ROOM" */
+}
+
+/* Bloc principal : on y met un fond plus clair ? */
+.room-main-endgame {
+  background-color: #6B4CA9; 
+  border-radius: 30px;
+  height: 89%;
+  width: 100%; 
+  padding: 10px;
+  padding-top: 10px;
+}
+
 /* La liste des gagnants (on veut une grille 2 lignes x 4 colonnes) */
-.winners-list {
+.players-list-endgame {
   /* Pour faire une grille : 2 lignes x 4 colonnes */
   display: grid;
   grid-template-columns: repeat(5, 1fr);
