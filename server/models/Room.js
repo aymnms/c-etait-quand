@@ -12,9 +12,9 @@ class Room {
         this.timer = null;
     }
 
-    addPlayer(socketId, playerName) {
+    addPlayer(socketId, playerName, indexAvatar) {
         if (!this.players.has(playerName)) {
-            this.players.set(playerName, new Player(playerName));
+            this.players.set(playerName, new Player(playerName, indexAvatar));
             this.socketIds.set(socketId, playerName);
             if (!this.host) {
                 this.host = playerName;
@@ -38,6 +38,14 @@ class Room {
         if (this.players.has(playerName)) {
             this.currentAnswers.set(playerName, answer);
         }
+    }
+
+    allAnswersReceived() {
+        let isDone = true;
+        this.players.forEach((player, playerName) => {
+            if (!this.currentAnswers.has(playerName)) isDone = false;
+        });
+        return isDone;
     }
 
     resetAnswers() {

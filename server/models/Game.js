@@ -7,16 +7,39 @@ class Game {
         this.timers = new Map();
     }
 
-    joinGame(socket, playerName, roomCode) {
-        if (!roomCode) roomCode = this.roomManager.createRoom();
+    joinGame(socket, playerName, indexAvatar, roomCode) {
+        if (!roomCode) {
+            this.roomManager.cleanEmptyRooms();
+            roomCode = this.roomManager.createRoom();
+        }
 
         const room = this.roomManager.getRoom(roomCode);
-        if (!room) return;
-        room.addPlayer(socket.id, playerName);
+        if (!room) {
+            socket.emit("message", "Une erreur s'est produite lors de la connexion à la room.", "error");
+            return;
+        }
+        if (room.players.size >= 10) {
+            console.log("LIMITE");
+            socket.emit("message", "La limite de joueur pour cette room a été atteinte.", "error");
+            return;
+        }
+        if (room.players.has(playerName)) {
+            console.log("DEJA PRIS");
+            socket.emit("message", "Ce surnom est déjà utilisé.", "error");
+            return;
+        }
+        if (playerName.length > 16) {
+            console.log("TROP LONG");
+            socket.emit("message", "Ce surnom contient trop de caractère.", "error");
+            return;
+        }
+        room.addPlayer(socket.id, playerName, indexAvatar);
         socket.join(roomCode);
-        
+
         console.log(`${playerName} a rejoint la salle ${roomCode}`);
-        this.io.to(roomCode).emit("roomJoined", roomCode, [...room.players.keys()], room.host);
+        socket.emit("message", `Vous avez rejoint la salle ${roomCode}`, "success");
+        this.io.to(roomCode).emit("message", `${playerName} a rejoint la salle`, "info");
+        this.io.to(roomCode).emit("roomJoined", roomCode, [...room.players.values()], room.host);
     }
 
     nextRound(roomCode) {
@@ -25,40 +48,49 @@ class Game {
 
         const winners = room.getWinners();
         if (winners.length) { // FIN DE GAME
-            this.io.to(roomCode).emit("gameEnded", { winners, scores: room.getScores(), logs: room.logs });
+            this.io.to(roomCode).emit("gameEnded", { logs: room.logs });
             this.io.socketsLeave(roomCode);
             this.io.in(roomCode).disconnectSockets(true);
             this.roomManager.deleteRoom(roomCode);
         } else {
             this.roomManager.randomQuestionIndex(roomCode);
-            this.io.to(roomCode).emit("gameStarted", this.roomManager.getQuestion(room.currentQuestionIndex));
             this.startTimer(roomCode);
+            this.io.to(roomCode).emit("gameStarted", this.roomManager.getQuestion(room.currentQuestionIndex));
         }
     }
-
+    
     submitAnswer(roomCode, playerName, answer) {
         const room = this.roomManager.getRoom(roomCode);
         if (!room) {
-            socket.emit("errorMessage", "La salle n'existe pas !");
+            socket.emit("message", "La salle n'existe pas !", "error");
             return;
         }
         room.submitAnswer(playerName, answer);
+        
+        if (room.allAnswersReceived()) { // check si tt players ont envoyé réponses
+            this.endRound(roomCode);
+        }
     }
-
+    
     startTimer(roomCode) {
         let timeLeft = process.env.TIMER;
         const room = this.roomManager.getRoom(roomCode);
         
+        this.io.to(room.code).emit("timerUpdate", timeLeft);
+        console.log(`⏳ Timer ${room.code}: ${timeLeft} sec`);
+        
         this.timers.set(roomCode, setInterval(() => {
+            timeLeft--;
             this.io.to(room.code).emit("timerUpdate", timeLeft);
             console.log(`⏳ Timer ${room.code}: ${timeLeft} sec`);
-            
-            if (timeLeft <= 0) {
+
+            if (timeLeft == 0) {
+                this.io.to(roomCode).emit("askAnswers");
+            } else if (timeLeft <= -5) {
                 this.stopTimer(roomCode);
                 this.endRound(roomCode);
+                timeLeft = process.env.TIMER;
             }
-            
-            timeLeft--;
         }, 1000));
     }
 
@@ -71,10 +103,10 @@ class Game {
     }
 
     endRound(roomCode) {
+        this.stopTimer(roomCode);
+
         const room = this.roomManager.getRoom(roomCode);
         if (!room) return;
-
-        this.stopTimer(roomCode);
 
         const question = this.roomManager.getQuestion(room.currentQuestionIndex);
 
@@ -87,6 +119,7 @@ class Game {
 
         let minDiff = Infinity;
         room.currentAnswers.forEach((answer, player) => {
+            if (isNaN(answer) || answer === "") return;
             let diff = Math.abs(answer - log.question.year);
 
             if (diff < minDiff) {
@@ -111,41 +144,44 @@ class Game {
         }
 
         this.io.to(roomCode).emit("roundResult", {
-            winners: log.perfectWinners.length ? log.perfectWinners : log.closestPlayers,
-            isPerfectWinners: log.perfectWinners.length > 0,
+            solution: question.year,
             explanation: `${log.question.invention} a été inventé en ${log.question.year}. ${log.question.explanation}`,
             scores: room.getScores(),
             answers: log.answers
         });
     }
 
-    disconnect(socket) {
+    leave(socket) {
+
         for (let [roomCode, room] of this.roomManager.rooms.entries()) {
             const playerName = room.removePlayer(socket.id);
             if (playerName) {
                 console.log(`❌ ${playerName} s'est déconnecté de la salle ${roomCode}`);
                 this.io.to(roomCode).emit("playerDisconnected", playerName, room.host);
-    
+
                 // Expulser le joueur de la room WebSocket
                 socket.leave(roomCode);
-    
+
                 // Vérifier si la room est vide
                 if (room.players.size === 0) {
                     console.log(`🗑️ Room ${roomCode} supprimée (dernier joueur parti).`);
-                    
+
                     // Expulser tous les sockets de la room avant suppression
                     this.io.socketsLeave(roomCode);
-    
+
                     // Supprimer la room de la mémoire
                     this.roomManager.deleteRoom(roomCode);
                 }
-    
-                // Forcer la fermeture de la connexion WebSocket du joueur
-                socket.disconnect(true);
-
                 return;
             }
         }
+        
+    }
+
+    disconnect(socket) {
+        this.leave(socket);
+        // Forcer la fermeture de la connexion WebSocket du joueur
+        socket.disconnect(true);
         console.log("Un joueur s'est déconnecté sans être dans une room.");
     }
 }

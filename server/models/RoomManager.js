@@ -35,6 +35,14 @@ class RoomManager {
         return this.rooms.get(roomCode);
     }
 
+    cleanEmptyRooms() { // delete all empty rooms
+        this.rooms.forEach((room, roomCode) => {
+            if (room.players.size <= 0) {
+                this.deleteRoom(roomCode);
+            }
+        });
+    }
+
     deleteRoom(roomCode) {
         this.rooms.delete(roomCode);
     }

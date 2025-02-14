@@ -5,224 +5,158 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>C'était Quand ?</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+
     <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
-        #startGame, #game, #results, #next, #endGame { display: none; }
-        img { max-width: 100%; max-height: 100vh;}
-    </style>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
+        rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
+        crossorigin="anonymous">
+
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="setup">
-        <h1>Entrez les noms des joueurs</h1>
-        <form id="playerForm">
-            <input type="text" placeholder="Nom du joueur" id="playerInput">
-            <button type="button" onclick="joinGame()">Rejoindre la Partie</button>
-        </form>
-        <h3>Code de la salle : <span id="roomCode"></span></h3>
-        <button id="startGame" onclick="nextRound()">Lancer la partie</button>
-        <ul id="playerListSetup"></ul>
+    <!-- HOME PAGE -->
+    <div id="home" class="container">
+        <img src="img/CetaitQuandLogo.png" alt="Logo C'était quand" class="logo">
+        <div class="menubutton-container">
+            <button class="play-button" onclick="goToSetupPage(true)">Créer</button><button class="play-button" onclick="goToSetupPage(false)">Rejoindre</button>
+        </div>
     </div>
 
-    <div id="game">
-        <img id="questionImage" src=""/>
-        <h2 id="question"></h2>
-        <h3>Temps restant : <span id="timer">30</span> secondes</h3>
-        <div id="answers"></div>
-        <button onclick="validateAnswers()">Valider</button>
-        <ul id="playerListGame"></ul>
+    <!-- SETUP PAGE -->
+    <div id="setup" class="setup-container">
+        <img src="img/CetaitQuandLogo.png" alt="Logo C'était quand" class="logo-watermark">
+        <button class="avatar-nav-btn back-button" onclick="back('setup')"><img src="img/ArrowButtonLeft.png" class="leftarrowbtn-img"/></button>
+        <div class="card">
+            <h2 class="card-title">CHOISIS UN AVATAR <br /> ET UN SURNOM</h2>
+
+            <div class="avatar-selection">
+              <button class="avatar-nav-btn" onclick="changeAvatar(-1)"><img src="img/ArrowButtonLeft.png" class="leftarrowbtn-img"/></button>
+                <img id="setup-avatar" src="img/Avatar1.png" alt="Avatar" class="avatar-img">
+                <button class="avatar-nav-btn"onclick="changeAvatar(1)"><img src="img/ArrowButtonRight.png" class="rightarrowbtn-img"/></button>
+            </div>
+            <input id="setup-playerInput" type="text" class="nickname-input" placeholder="SURNOM" value="">
+            <div class="join-code-container">
+                <input id="setup-code" type="text" class="code-input" placeholder="CODE" value=""><button id="setup-next" class="join-button" onclick="joinGame()">REJOINDRE</button>
+            </div>
+        </div>
     </div>
 
-    <div id="results">
-        <h2 id="roundResult"></h2>
-        <p id="explanation"></p>
-        <table border="1" id="currentAnswers"></table>
-        <br />
-        <table border="1" id="currentScores"></table>
-        <button id="next" onclick="nextRound()">Suivant</button>
+    <!-- WAITING PAGE -->
+    <div id="waiting" class="room-container">
+        <img src="img/CetaitQuandLogo.png" alt="Logo C'était quand" class="logo-watermark">
+        <button class="avatar-nav-btn back-button" onclick="back('waiting')"><img src="img/ArrowButtonLeft.png" class="leftarrowbtn-img"/></button>
+        <!-- Header sombre -->
+        <div class="room-header-waiting">
+            <h1 class="room-title">ROOM</h1>      
+            <!-- Bloc principal violet clair -->
+            <main class="room-main-waiting">
+                <!-- Titre / nb de joueurs -->
+                <div class="player-code-container">
+                    <h2 id="nbPlayer" class="player-count">JOUEUR 0/10</h2><div class="code-box"></divlass><h1 id="roomCode" class="code-title">CODE: </h1></div>
+                </div>
+
+                <div id="playerListWaiting" class="players-list"></div>
+            </main>
+        </div>
+        <!-- Footer (bouton "JOUER") -->
+        <div id="startGame" class="room-footer">
+            <button class="room-play-button" onclick="nextRound()">JOUER</button>
+        </div>
     </div>
 
-    <div id="endGame" class="hidden">
-        <h1>Partie terminée !</h1>
-        <table border="1" id="finalScores"></table>
-        <h2 id="winner"></h2>
+    <!-- GAME PAGE -->
+    <!-- Le grand rectangle violet -->
+    <div id="game" class="game-page">
+      <div class="card-front">
+          <!-- Bandeau noir du haut (titre principal) -->
+          <div class="card-header">
+            <h1>C'ÉTAIT QUAND?</h1>
+          </div>
+
+          <!-- Le rectangle "intérieur" dans la carte -->
+          <div class="card-inner">
+            <h2 id="question" class="event-title">L'IMPRIMERIE</h2>
+            <h3>Temps restant : <span id="timer">30</span> secondes</h3>
+            
+            <div class="image-wrapper">
+              <img id="questionImage" src="" alt="">
+            </div>
+          </div>
+      </div>
+      <!-- Bandeau noir du bas (champ date + bouton) -->
+      <div class="card-footer">
+        <input id="answer" type="text" class="date-input" placeholder="DATE">
+      </div>
     </div>
 
-    <script>
-        const ENV = window.location.href.includes("index.html") ? "local" : window.location.href.includes("preprod") ? "preprod" : "prod";
+    <!-- SPINNER PAGE -->
+    <div class="d-flex justify-content-center">
+      <div id="spinner" class="spinner-border text-light" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
 
-        const CONFIG = {
-            local: {
-                BACKEND_URL: "http://localhost:3000",
-            },
-            preprod: {
-                BACKEND_URL: "https://c-etait-quand-back-preprod.onrender.com",
-            },
-            prod: {
-                BACKEND_URL: "https://c-etait-quand-back.onrender.com",
-            }
-        };
+    <!-- RESULTS PAGE -->
+    <div id="results" class="game-page">
+        <div class="card-front">
+          <div class="card-header">
+            <h1>RÉSULTATS</h1>
+          </div>
+          <div class="card-inner results-content">
+            <div class="explanation-box">
+              <h2 id="solution" class="final-date"></h2>
+              <p id="explanation"></p>
+            </div>
+            <div id=player-cards class="players-row">
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button id="next" class="validate-button" onclick="nextRound()">Question suivante</button>
+        </div>
+    </div>
 
-        if (ENV != "prod") document.title = ENV.toUpperCase() + " - " + document.title;
+    <!-- ENDGAME PAGE -->
+    <div id="endGame" class="room-container">
+      <!-- Logo en filigrane ou autre si tu veux -->
+      <img src="img/CetaitQuandLogo.png" alt="Logo C'était quand" class="logo-watermark">
+      
+      <!-- Header sombre -->
+      <div class="room-header-endgame">
+        <h1 class="room-title">GAGNANTS</h1>
+        
+        <!-- Zone principale en violet clair -->
+        <main class="room-main-endgame">
+          <div id="playerListEndGame" class="players-list-endgame"></div>
+        </main>
+      </div>
+      
+      <!-- Footer : bouton REJOUER -->
+      <div class="room-footer">
+        <button class="room-play-button" onclick="back('endGame')">
+          REJOUER
+        </button>
+      </div>
+    </div>
 
-        const BACKEND_URL = CONFIG[ENV].BACKEND_URL;
+    <!-- Conteneur pour le toast -->
+    <!-- En haut à droite -->
+    <div 
+      id="toastContainer"
+      class="position-fixed bottom-0 end-0 p-3"
+      style="z-index: 9999"
+    ></div>
 
-        const socket = io(BACKEND_URL);
-        let playerName = "";
-        let playersName = []
-        let roomCode = "";
-        let hostName = "";
-
-        function joinGame() {
-            playerName = document.getElementById("playerInput").value.trim();
-            if (!playerName) return alert("Entrez un nom de joueur");
-            roomCode = prompt("Entrez le code de la salle ou laissez vide pour en créer une nouvelle");
-            socket.emit("joinGame", { playerName, roomCode });
-        }
-
-        function displayQuestion(question) {
-            document.getElementById("question").innerText = `C'était quand... ${question.invention} ?`;
-            document.getElementById("questionImage").src=question.image;
-            let answersDiv = document.getElementById("answers");
-            answersDiv.innerHTML = `<p>${playerName} : <input type='number' id='answer'></p>`;
-        }
-
-        function validateAnswers() {
-            let answer = parseInt(document.getElementById("answer").value);
-            if (isNaN(answer)) return;
-            socket.emit("submitAnswer", { roomCode, playerName, answer });
-        }
-
-        function nextRound() {
-            socket.emit("nextRound", roomCode);
-        }
-
-        function updateHostDisplay() {
-            if (playerName == hostName) {
-                if (document.getElementById("setup").style.display === "block") {
-                    document.getElementById("startGame").style.display = "inline-block";
-                    document.getElementById("next").style.display = "none";
-                }
-                else if (document.getElementById("results").style.display === "block") {
-                    document.getElementById("startGame").style.display = "none";
-                    document.getElementById("next").style.display = "inline-block";
-                }
-            }
-        }
-
-        function updateDisplay(step) {
-            if (step === "setup") {
-                document.getElementById("setup").style.display = "block";
-                document.getElementById("game").style.display = "none";
-                document.getElementById("results").style.display = "none";
-                document.getElementById("endGame").style.display = "none";
-            }
-            else if (step === "game") {
-                document.getElementById("setup").style.display = "none";
-                document.getElementById("game").style.display = "block";
-                document.getElementById("results").style.display = "none";
-                document.getElementById("endGame").style.display = "none";
-            }
-            else if (step === "results") {
-                document.getElementById("setup").style.display = "none";
-                document.getElementById("game").style.display = "none";
-                document.getElementById("results").style.display = "block";
-                document.getElementById("endGame").style.display = "none";
-            }
-            else if (step === "endGame") {
-                document.getElementById("setup").style.display = "none";
-                document.getElementById("game").style.display = "none";
-                document.getElementById("results").style.display = "none";
-                document.getElementById("endGame").style.display = "block";
-            }
-        }
-
-        function displayPlayerList() {
-            const HtmlList = [
-                document.getElementById("playerListSetup"),
-                document.getElementById("playerListGame")
-            ];
-            let listElement = ""
-            for (const player of playersName) {
-                listElement += "<li>" + player + "</li>";
-            }
-            for (const HtmlElement of HtmlList) {
-                HtmlElement.innerHTML = listElement;
-            }
-        }
-
-        // ------- WEBSOCKET ------- //
-
-        socket.on("roomJoined", (code, players, host) => {
-            roomCode = code;
-            document.getElementById("roomCode").innerText = code;
-            playersName = players;
-            hostName = host;
-            updateDisplay("step");
-            updateHostDisplay();
-            displayPlayerList();
-        });
-
-        socket.on("gameStarted", (question) => {
-            updateDisplay("game");
-            displayQuestion(question);
-        });
-
-        socket.on("timerUpdate", (timeLeft) => {
-            const timerElement = document.getElementById("timer");
-            timerElement.innerText = timeLeft;
-        });
-
-        socket.on("roundResult", ({ winners, isPerfectWinners, explanation, scores, answers }) => {
-            updateDisplay("results");
-            let roundResultMessage = `${winners.join(",")} gagne(nt)`;
-            roundResultMessage += isPerfectWinners ? ` 3 points !` : ` 1 point !`;
-            document.getElementById("roundResult").innerText = roundResultMessage;
-            document.getElementById("explanation").innerText = explanation;
-
-            let answersTable = document.getElementById("currentAnswers");
-            answersTable.innerHTML = "<tr><th>Joueurs</th><th>Réponses</th></tr>";
-            Object.keys(answers).forEach(player => {
-                console.log(player + " " + answers[player]);
-                answersTable.innerHTML += `<tr><td>${player}</td><td>${answers[player]}</td></tr>`;
-            });
-
-            let currentScoresTable = document.getElementById("currentScores");
-            currentScoresTable.innerHTML = "<tr><th>Joueur</th><th>Score</th></tr>";
-            Object.keys(scores).forEach(player => {
-                currentScoresTable.innerHTML += `<tr><td>${player}</td><td>${scores[player]}</td></tr>`;
-            });
-            updateHostDisplay();
-        });
-
-        socket.on("gameEnded", ({ winners, scores, logs }) => {
-            updateDisplay("endGame");
-            document.getElementById("winner").innerText = `Gagnants : ${winners.join(", ")}`;
-            let finalScoresTable = document.getElementById("finalScores");
-            finalScoresTable.innerHTML = "<tr><th>Joueurs</th><th>Scores</th></tr>";
-            Object.keys(scores).forEach(player => {
-                finalScoresTable.innerHTML += `<tr><td>${player}</td><td>${scores[player]}</td></tr>`;
-            });
-            console.log(logs);
-        });
-
-        socket.on("errorMessage", (message) => {
-            alert(message);
-        });
-
-        socket.on("playerDisconnected", (player, host) => {
-            alert(player + " vient de quitter la partie");
-            if (hostName != host) {
-                hostName = host;
-                displayPlayerList();
-                if (hostName === playerName){
-                    updateHostDisplay();
-                    alert("Vous êtes devenu le nouvel hôte !");
-                }
-            }
-        });
-
-        updateDisplay("setup");
-    </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

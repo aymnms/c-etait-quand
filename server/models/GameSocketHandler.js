@@ -7,8 +7,8 @@ class GameSocketHandler {
     }
 
     handleConnection(socket) {
-        socket.on("joinGame", ({ playerName, roomCode }) => {
-            this.game.joinGame(socket, playerName, roomCode);
+        socket.on("joinGame", ({ playerName, indexAvatar, roomCode }) => {
+            this.game.joinGame(socket, playerName, indexAvatar, roomCode);
         });
 
         socket.on("nextRound", (roomCode) => {
@@ -21,6 +21,10 @@ class GameSocketHandler {
 
         socket.on("endRound", (roomCode) => {
             this.game.endRound(roomCode);
+        });
+
+        socket.on("leave", () => {
+            this.game.leave(socket);
         });
 
         socket.on("disconnect", () => {
