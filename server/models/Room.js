@@ -43,7 +43,7 @@ class Room {
     allAnswersReceived() {
         let isDone = true;
         this.players.forEach((player, playerName) => {
-            if (!this.currentAnswers.get(playerName)) isDone = false;
+            if (!this.currentAnswers.has(playerName)) isDone = false;
         });
         return isDone;
     }

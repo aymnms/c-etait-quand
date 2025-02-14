@@ -87,8 +87,8 @@ function submitAnswer() {
     let answerElement = document.getElementById("answer");
     let answer = parseInt(answerElement.value);
     if (isNaN(answer)) {
-        createToast("La réponse n'est pas un nombre.");
-        return;
+        if (answerElement.value == "") answer = "";
+        else createToast("La réponse n'est pas un nombre.");
     }
     socket.emit("submitAnswer", { roomCode: party.roomCode, playerName: myself.name, answer });
     answerElement.value = "";

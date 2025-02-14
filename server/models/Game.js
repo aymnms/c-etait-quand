@@ -119,6 +119,7 @@ class Game {
 
         let minDiff = Infinity;
         room.currentAnswers.forEach((answer, player) => {
+            if (isNaN(answer) || answer === "") return;
             let diff = Math.abs(answer - log.question.year);
 
             if (diff < minDiff) {
