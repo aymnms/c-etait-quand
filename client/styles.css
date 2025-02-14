@@ -564,6 +564,14 @@ body {
   margin-bottom: 0.5rem; /* Espace de 0.5rem sous chaque toast */
 }
 
+/* Bouton retour */
+
+.back-button {
+  position: absolute;
+  top: 45px;
+  left: 45px;
+}
+
 /* CSS ZEZE */
 
 

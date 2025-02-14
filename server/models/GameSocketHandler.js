@@ -23,6 +23,10 @@ class GameSocketHandler {
             this.game.endRound(roomCode);
         });
 
+        socket.on("leave", () => {
+            this.game.leave(socket);
+        });
+
         socket.on("disconnect", () => {
             this.game.disconnect(socket);
         });

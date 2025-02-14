@@ -30,17 +30,25 @@ let myself = {
     score: 0
 }
 
-let party = {
-    roomCode: "",
-    playerHostName: "",
-    players: [],
-    step: "home"
+let party;
+resetParty();
+
+function resetParty() {
+    party = {
+        roomCode: "",
+        playerHostName: "",
+        players: [],
+        step: "home"
+    }
 }
 
 function goToSetupPage(isHost) {
     if (isHost) {
         document.getElementById("setup-code").style.display = "none";
-        document.getElementById("setup-next").innerText = "CRÉER"
+        document.getElementById("setup-next").innerText = "CRÉER";
+    } else {
+        document.getElementById("setup-code").style.display = "";
+        document.getElementById("setup-next").innerText = "REJOINDRE";
     }
     updateDisplay("setup");
 }
@@ -192,7 +200,23 @@ function createToast(message, type = "info") {
     
     // 7) Affiche-le
     bsToast.show();
-  }
+}
+
+function back(from) {
+    if (from === "setup") {
+        updateDisplay("home");
+    }
+    else if (from === "waiting") {
+        // déconnecter le joueur
+        socket.emit("leave");
+        resetParty();
+        // goTo setup
+        updateDisplay("setup");
+    }
+    else if (from === "endGame") {
+        updateDisplay("home");
+    }
+}
 
 
 // ------- WEBSOCKET ------- //
@@ -252,6 +276,7 @@ socket.on("gameEnded", ({ winners, scores, logs }) => {
     Object.keys(scores).forEach(player => {
         finalScoresTable.innerHTML += `<tr><td>${player}</td><td>${scores[player]}</td></tr>`;
     });
+    resetParty();
     console.log(logs);
 });
 

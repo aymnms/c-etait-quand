@@ -150,33 +150,37 @@ class Game {
         });
     }
 
-    disconnect(socket) {
+    leave(socket) {
+
         for (let [roomCode, room] of this.roomManager.rooms.entries()) {
             const playerName = room.removePlayer(socket.id);
             if (playerName) {
                 console.log(`❌ ${playerName} s'est déconnecté de la salle ${roomCode}`);
                 this.io.to(roomCode).emit("playerDisconnected", playerName, room.host);
-    
+
                 // Expulser le joueur de la room WebSocket
                 socket.leave(roomCode);
-    
+
                 // Vérifier si la room est vide
                 if (room.players.size === 0) {
                     console.log(`🗑️ Room ${roomCode} supprimée (dernier joueur parti).`);
-                    
+
                     // Expulser tous les sockets de la room avant suppression
                     this.io.socketsLeave(roomCode);
-    
+
                     // Supprimer la room de la mémoire
                     this.roomManager.deleteRoom(roomCode);
                 }
-    
-                // Forcer la fermeture de la connexion WebSocket du joueur
-                socket.disconnect(true);
-
                 return;
             }
         }
+        
+    }
+
+    disconnect(socket) {
+        this.leave(socket);
+        // Forcer la fermeture de la connexion WebSocket du joueur
+        socket.disconnect(true);
         console.log("Un joueur s'est déconnecté sans être dans une room.");
     }
 }

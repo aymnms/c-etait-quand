@@ -31,15 +31,16 @@
             <button class="play-button" onclick="goToSetupPage(true)">Créer</button><button class="play-button" onclick="goToSetupPage(false)">Rejoindre</button>
         </div>
     </div>
-    
+
     <!-- SETUP PAGE -->
     <div id="setup" class="setup-container">
         <img src="img/CetaitQuandLogo.png" alt="Logo C'était quand" class="logo-watermark">
+        <button class="avatar-nav-btn back-button" onclick="back('setup')"><img src="img/ArrowButtonLeft.png" class="leftarrowbtn-img"/></button>
         <div class="card">
             <h2 class="card-title">CHOISIS UN AVATAR <br /> ET UN SURNOM</h2>
-            
+
             <div class="avatar-selection">
-                <button class="avatar-nav-btn" onclick="changeAvatar(-1)"><img src="img/ArrowButtonLeft.png" class="leftarrowbtn-img"/></button>
+              <button class="avatar-nav-btn" onclick="changeAvatar(-1)"><img src="img/ArrowButtonLeft.png" class="leftarrowbtn-img"/></button>
                 <img id="setup-avatar" src="img/Avatar1.png" alt="Avatar" class="avatar-img">
                 <button class="avatar-nav-btn"onclick="changeAvatar(1)"><img src="img/ArrowButtonRight.png" class="rightarrowbtn-img"/></button>
             </div>
@@ -49,10 +50,11 @@
             </div>
         </div>
     </div>
-    
+
     <!-- WAITING PAGE -->
     <div id="waiting" class="room-container">
         <img src="img/CetaitQuandLogo.png" alt="Logo C'était quand" class="logo-watermark">
+        <button class="avatar-nav-btn back-button" onclick="back('waiting')"><img src="img/ArrowButtonLeft.png" class="leftarrowbtn-img"/></button>
         <!-- Header sombre -->
         <div class="room-header">
             <h1 class="room-title">ROOM</h1>      
@@ -127,6 +129,7 @@
     <!-- ENDGAME PAGE -->
     <div id="endGame" class="hidden">
         <h1>Partie terminée !</h1>
+        <button class="avatar-nav-btn back-button" onclick="back('endGame')"><img src="img/ArrowButtonLeft.png" class="leftarrowbtn-img"/></button>
         <table border="1" id="finalScores"></table>
         <h2 id="winner"></h2>
     </div>
