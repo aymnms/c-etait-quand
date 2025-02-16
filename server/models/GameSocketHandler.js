@@ -6,12 +6,12 @@ class GameSocketHandler {
         this.game = new Game(io);
     }
 
-    handleConnection(socket) {
+    async handleConnection(socket) {
         socket.on("joinGame", ({ playerName, indexAvatar, roomCode }) => {
             this.game.joinGame(socket, playerName, indexAvatar, roomCode);
         });
 
-        socket.on("nextRound", (roomCode) => {
+        await socket.on("nextRound", (roomCode) => {
             this.game.nextRound(roomCode);
         });
 
