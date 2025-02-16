@@ -15,7 +15,7 @@ describe("Room", () => {
         expect(room.socketIds.size).toBe(0);
         expect(room.currentAnswers.size).toBe(0);
         expect(room.logs.length).toBe(0);
-        expect(room.currentQuestionIndex).toBe(0);
+        expect(room.currentQuestion).toBe(null);
     });
     
     test("Ajouter un joueur à une room", () => {
