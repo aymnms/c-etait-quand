@@ -1,15 +1,19 @@
 -- CreateTable
 CREATE TABLE "Question" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "invention" TEXT NOT NULL,
     "year" INTEGER NOT NULL,
     "explanation" TEXT NOT NULL,
-    "imageUrl" TEXT
+    "imageUrl" TEXT,
+
+    CONSTRAINT "Question_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Avatar" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "imageUrl" TEXT NOT NULL
+    "imageUrl" TEXT NOT NULL,
+
+    CONSTRAINT "Avatar_pkey" PRIMARY KEY ("id")
 );
