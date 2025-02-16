@@ -1,4 +1,5 @@
 const Player = require("./Player");
+const { getRandomQuestion, getQuestion } = require("../database");
 
 class Room {
     constructor(code) {
@@ -6,9 +7,9 @@ class Room {
         this.players = new Map(); // Map(playerName -> Player)
         this.host = "";
         this.socketIds = new Map(); // Map(socketId -> playerName)
+        this.currentQuestion = null;
         this.currentAnswers = new Map(); // Map(playerName -> answer)
         this.logs = [];
-        this.currentQuestionIndex = 0;
         this.timer = null;
     }
 
@@ -32,6 +33,24 @@ class Room {
             }
         }
         return playerName;
+    }
+
+    async changeQuestion() {
+        try {
+            const question = await getRandomQuestion();
+            this.currentQuestion = question;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async getQuestionById(question_id) {
+        try {
+            const question = await getQuestion(question_id);
+            return question;
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     submitAnswer(playerName, answer) {

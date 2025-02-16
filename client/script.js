@@ -79,7 +79,7 @@ function joinGame() {
 
 function displayQuestion(question) {
     document.getElementById("question").innerText = `${question.invention}`;
-    document.getElementById("questionImage").src=question.image;
+    document.getElementById("questionImage").src=question.imageUrl;
     document.getElementById("questionImage").alt=question.invention;
 }
 

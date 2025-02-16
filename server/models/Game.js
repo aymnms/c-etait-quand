@@ -42,7 +42,7 @@ class Game {
         this.io.to(roomCode).emit("roomJoined", roomCode, [...room.players.values()], room.host);
     }
 
-    nextRound(roomCode) {
+    async nextRound(roomCode) {
         const room = this.roomManager.getRoom(roomCode);
         if (!room) return;
 
@@ -53,9 +53,9 @@ class Game {
             this.io.in(roomCode).disconnectSockets(true);
             this.roomManager.deleteRoom(roomCode);
         } else {
-            this.roomManager.randomQuestionIndex(roomCode);
+            await room.changeQuestion();
             this.startTimer(roomCode);
-            this.io.to(roomCode).emit("gameStarted", this.roomManager.getQuestion(room.currentQuestionIndex));
+            this.io.to(roomCode).emit("gameStarted", room.currentQuestion);
         }
     }
     
@@ -108,7 +108,7 @@ class Game {
         const room = this.roomManager.getRoom(roomCode);
         if (!room) return;
 
-        const question = this.roomManager.getQuestion(room.currentQuestionIndex);
+        const question = room.currentQuestion;
 
         let log = {
             question,
@@ -145,7 +145,7 @@ class Game {
 
         this.io.to(roomCode).emit("roundResult", {
             solution: question.year,
-            explanation: `${log.question.invention} a été inventé en ${log.question.year}. ${log.question.explanation}`,
+            explanation: `${log.question.explanation}`,
             scores: room.getScores(),
             answers: log.answers
         });
