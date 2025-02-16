@@ -13,6 +13,6 @@
     "start": "node server.js",
     "test": "jest",
     "seed": "node prisma/seed.js",
-    "postinstall": "npx prisma migrate deploy"
+    "post-install": "npx prisma migrate deploy"
   }
 }
