@@ -368,6 +368,27 @@ body {
   display: contents;
 }
 
+.timer-progress{
+  position: absolute;
+  top: 67px;
+  right: 94px;
+  width: 95px;
+  height: 95px; 
+  stroke-width: 50px;
+  background-color: #2C1E37;
+	border-radius: 50%; 
+  background: 
+    conic-gradient( transparent 50%, #2C1E37 0);    
+  
+}
+
+.circle-progress-circle {
+	stroke-width: 50px;
+	stroke: #999;
+}
+.circle-progress-text {
+	fill: white;
+}
 /* ===== Le grand rectangle violet au premier plan ===== */
 .card-front {
   height: 729px;
