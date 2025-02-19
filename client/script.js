@@ -38,7 +38,9 @@ function resetParty() {
         roomCode: "",
         playerHostName: "",
         players: [],
-        step: "home"
+        step: "home",
+        roundTime: (ENV === "local") ? 10 : 30,
+        timer: 0
     }
 }
 
@@ -254,6 +256,22 @@ function back(from) {
     }
 }
 
+function updateTimer(timeLeft) {
+    const timerElement = document.getElementById("timer");
+    let progress = timeLeft / party.roundTime;
+    timerElement.style.background = `conic-gradient(transparent ${progress*100}%, #2C1E37 0)`;
+}
+
+function animationTimer() {
+    const timerInterval = setInterval(() => {
+        if (party.timer > 0) {
+            party.timer -= 0.1;
+            updateTimer(party.timer);
+        } else {
+            clearInterval(timerInterval);
+        }
+    }, 100);
+}
 
 // ------- WEBSOCKET ------- //
 
@@ -273,8 +291,10 @@ socket.on("gameStarted", (question) => {
 });
 
 socket.on("timerUpdate", (timeLeft) => {
-    const timerElement = document.getElementById("timer");
-    timerElement.innerText = timeLeft;
+    party.timer = timeLeft;
+    if (timeLeft == party.roundTime) {
+        animationTimer()
+    }
 });
 
 socket.on("askAnswers", () => {

@@ -1,6 +1,7 @@
 /* ========== RESET DE BASE ========== */
 body {
   font-family: 'Quicksand', sans-serif;
+  font-weight: bold;
   padding: 0;
   margin: 0;
   
@@ -276,7 +277,7 @@ body {
 }
 
 .code-title {
-  padding-top: 5px;
+  padding-top: 8px;
   font-size: 30px;
   font-weight: bold;
   text-align: right;
@@ -289,8 +290,7 @@ body {
   font-size: 40px;
   font-weight: bold;
   text-align: left;
-  
-  /* Eventuel effet de halo/vibration neon : */
+  padding-top: 10px;
 }
 
 /* La liste des joueurs : on veut une disposition horizontale */
@@ -299,7 +299,7 @@ body {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-auto-rows: 220px;
-  grid-gap: 1rem;
+  grid-gap: 10px;
   justify-items: center;  /* centre chaque cellule horizontalement */
   align-items: center;    /* centre verticalement */
 }
@@ -361,65 +361,65 @@ body {
 /*            STYLES POUR LA PAGE GAME                   */
 /*********************************************************/
 
-/* Le body est peut-être déjà configuré (fond #2B0F43, etc.) 
-   et centré verticalement. Au besoin, par exemple :
-body {
-  background-color: #2B0F43;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-  color: #ffffff; 
-  font-family: Arial, sans-serif;
-}
-*/
-
 /* Conteneur principal de la page */
 .game-page {
-  width: 90%;
-  max-width: 1000px;
+  width: 100%;
+  box-sizing: border-box;
+  display: contents;
+}
+
+.timer-progress {
+  position: absolute;
+  top: 67px;
+  right: 94px;
+  width: 95px;
+  height: 95px; 
+  border-radius: 50%;
+  background: conic-gradient(transparent 100%, #2C1E37 0);
 }
 
 /* ===== Le grand rectangle violet au premier plan ===== */
 .card-front {
-  position: relative;
-  background-color: #1F0A33; /* Violet principal */
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  height: 729px;
+  width: 1158px;
+  align-content: flex-end;
+  padding: 10px;
+  padding-bottom: 20px;
+  border-radius: 30px;
+  background-color: #2C1E37;  /* Même couleur que le conteneur ? ou un peu plus sombre si tu veux ? */
+  margin: 0 auto;
+  text-align: center;
 }
 
 /* ===== BANDEAU NOIR EN HAUT ===== */
 .card-header {
   text-align: center;
-  padding: 1rem;
-  
+  padding: 10px;
   /* Coins arrondis du haut */
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
+  border-radius: 30px;
 }
 
 .card-header h1 {
   margin: 0;
-  font-size: 1.6rem;
+  font-size: 50px;
+  font-weight: bold;
   text-transform: uppercase;
-  letter-spacing: 1px;
 }
 
 /* ===== RECTANGLE VIOLET "INTÉRIEUR" ===== */
 .card-inner {
-  background-color: #7E57B5; /* Un violet plus clair ou plus foncé, au choix,
-                                pour bien faire ressortir le côté “encadré” */
-  border-radius: 15px;
-  padding: 1.5rem;
-  margin-bottom: 1rem; /* Espace avant le footer */
-  text-align: center;
+  background-color: #6B4CA9;
+  padding-top: 10px;
+  border-radius: 30px;
+  height: 90%;
+  width: 100%; 
+  padding: 10px;
 }
 
 /* Sous-titre "L'IMPRIMERIE" */
 .event-title {
   margin-bottom: 1rem;
-  font-size: 1.3rem;
+  font-size: 40px;
   font-weight: bold;
 }
 
@@ -429,51 +429,62 @@ body {
 }
 
 .image-wrapper img {
-  max-width: 60%;
-  border-radius: 12px;
+  max-width: 760px;
+  max-height: 500px;
+  border-radius: 50px;
+  border: solid #2C1E37;
+  border-width: 10px;
   display: inline-block;
 }
 
 /* ===== BANDEAU NOIR EN BAS ===== */
 .card-footer {
-  padding: 1rem;
-  
-  /* Coins arrondis du bas */
-  border-bottom-left-radius: 20px;
+  padding: 10px;
   border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
 
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 10px;
 }
 
 /* Champ "DATE" */
 .date-input {
-  background-color: transparent; 
+  background-color: #9D8EA9; 
+  height: 93px;
+  width: 443px;
   color: #ffffff;
-  border: 2px solid #ffffff;
-  border-radius: 10px;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
+  border: 10px solid #ffffff;
+  border-radius: 30px;
+  padding: 5px 10px;
+  font-size: 40px;
+  font-weight: bold;
   text-align: center;
 }
 
+.date-input:focus {
+  outline: solid #9C5EEB;
+  outline-width: 3px;
+  outline-offset: 2px;
+}
 /* Bouton "VALIDER" */
 .validate-button {
   background-color: #9C5EEB;
   color: #FFFFFF;
   border: none;
-  border-radius: 10px;
-  padding: 0.5rem 1rem;
+  border-radius: 55px;
+  height: 69px;
+  width: 380px;
+  justify-content: center;
+  margin-top: 20px;
   
-  font-size: 1rem;
+  font-size: 30px;
   font-weight: bold;
   cursor: pointer;
   text-transform: uppercase;
   
   transition: background-color 0.3s;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 .validate-button:hover {
   background-color: #AB76F5;
@@ -491,37 +502,50 @@ body {
 
 /* La date finale en grand (ex. 1440) */
 .final-date {
-  font-size: 1.4rem;
+  background-color: #2C1E37;
+  border-radius: 50px;
+  width: fit-content;
+  padding: 20px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  font-size: 50px;
   font-weight: bold;
-  margin-bottom: 1rem;
+
+  margin: 0 auto;
+  margin-bottom: 10px;
 }
 
 /* Le bloc encadré pour la description */
 .explanation-box {
-  background-color: #5D3B7F; /* Ou autre violet plus clair */
-  border-radius: 12px;
-  padding: 1rem;
-  margin: 0 6rem 1.5rem 6rem; /* Espace sous le bloc */
+  height: 260px;
+  width: 990px;
+  background-color: #583E87; /* Ou autre violet plus clair */
+  border-radius: 30px;
+  padding: 10px;
+  margin: 0 auto;
+  margin-top: 10px;
+  margin-bottom: 60px;
+
+  font-size: 30px;
   
-  /* Le texte reste en blanc hérité, si body { color: #fff; } */
 }
 
 /* La rangée de cartes joueurs */
 .players-row {
   display: flex;
   flex-wrap: wrap;          /* Permet de passer à la ligne si trop d'éléments */
-  gap: 1rem;                /* Espace horizontal/vertical entre les cartes */
+  gap: 10px;                /* Espace horizontal/vertical entre les cartes */
   justify-content: center;  /* Centre le tout horizontalement */
 }
 
 /* Chaque "carte joueur" */
 .player-card {
-  background-color: #8D69C7; /* Un violet un peu différent, ajustable selon ta maquette */
-  width: 80px;              /* Ajuste la largeur selon la place voulue */
-  min-height: 120px;        /* Hauteur approximative ; ajuste selon la maquette */
-  border-radius: 25px;
+  background-color: #583E87; /* Un violet un peu différent, ajustable selon ta maquette */
+  width: 100px;              /* Ajuste la largeur selon la place voulue */
+  height: 240px;        /* Hauteur approximative ; ajuste selon la maquette */
+  border-radius: 30px;
   text-align: center;
-  padding: 0.5rem;
+  
   
   display: flex;
   flex-direction: column;
@@ -531,34 +555,40 @@ body {
 
 /* On peut distinguer un "slot" vide */
 .player-card.empty-slot {
-  opacity: 0.3;       /* On le rend semi-transparent */
+  background-color: #7050B0;       /* On le rend semi-transparent */
   /* on peut ajouter un border dashed, etc. si souhaité */
-  border: 2px dashed #ccc;
+  border: 10px dashed #7D5DBC;
 }
 
 /* La date proposée (ex. 1950) */
 .guessed-date {
+  background-color: #2C1E37;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+  width: 100%;
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 25px;
   margin: 0;
 }
 
 /* L'avatar dans la player-card */
 .player-avatar-results {
-  width: 70px;
-  height: auto;
-  border-radius: 50%; /* Par ex., si tu veux un avatar rond */
+  width: 100px;
+  height: 100px;
+  border-radius: 10px; /* Par ex., si tu veux un avatar rond */
 }
 
 /* Le nom du joueur (ex. "Zezette") */
 .player-name-results {
-  font-size: 1.1rem;
+  font-size: 20px;
   margin: 0;
 }
 
 /* Le score du joueur (ex. "5") */
 .player-score {
-  font-size: 2.2rem;
+  font-size: 40px;
   font-weight: bold;
   margin: 0;
 }
@@ -566,7 +596,7 @@ body {
 /* TOAST */
 
 #toastContainer .toast {
-  margin-bottom: 0.5rem; /* Espace de 0.5rem sous chaque toast */
+  margin-bottom: 5px; /* Espace de 0.5rem sous chaque toast */
 }
 
 /* Bouton retour */
