@@ -88,8 +88,8 @@ function displayQuestion(question) {
 function submitAnswer() {
     let answerElement = document.getElementById("answer");
     let answer = parseInt(answerElement.value);
-    if (isNaN(answer)) {
-        if (answerElement.value == "") answer = "";
+    if (isNaN(answer) && answer != 0) {
+        if (answerElement.value.trim() == "") answer = "";
         else createToast("La réponse n'est pas un nombre.");
     }
     socket.emit("submitAnswer", { roomCode: party.roomCode, playerName: myself.name, answer });
@@ -134,8 +134,6 @@ function updateDisplay(step) {
 }
 
 function displayPlayerListEndGame() {
-    console.log(party.players);
-    
     let sortPlayerList = party.players;
     sortPlayerList.sort((a, b) => b.score - a.score);
     
@@ -163,8 +161,7 @@ function displayPlayerListEndGame() {
             <p class="player-name-endgame">${player.name}</p>
         </div>`;
     }
-    console.log(party.players.length);
-    
+
     for (let i = 0; i < 10 - party.players.length; i++) {        
         listElement += `<div class="player player-empty-slot"></div>`;
     }
@@ -188,14 +185,26 @@ function displayPlayerListWaiting() {
     document.getElementById("nbPlayer").innerText = `JOUEUR ${party.players.length}/10`;
 }
 
-function displayPlayerListResults(scores, answers) {
+function displayPlayerListResults(solution, scores, answers, playersWon) {
     let playerCards = document.getElementById("player-cards");
     playerCards.innerHTML = "";
     for (let localPlayer of party.players) {
         localPlayer.score = scores[localPlayer.name];
-        const answer = answers[localPlayer.name] ? answers[localPlayer.name] : "❌";
+        let answer = answers[localPlayer.name];
+        if (isNaN(answer) && answer != 0) {
+            answer = "❌";
+        }
+        
+        let playerCardAddedClass = "";
+        if (playersWon.includes(localPlayer.name)) {
+            if (answer === solution) {
+                playerCardAddedClass = "player-perfect";
+            } else {
+                playerCardAddedClass = "player-won";
+            }
+        }
         playerCards.innerHTML += `
-        <div class="player-card">
+        <div class="player-card ${playerCardAddedClass}">
             <p class="guessed-date">${answer}</p>
             <img src="img/${avatars[localPlayer.avatar]}" alt="${localPlayer.name}" class="player-avatar-results">
             <p class="player-name">${localPlayer.name}</p>
@@ -322,13 +331,13 @@ socket.on("askAnswers", () => {
     updateDisplay("spinner");
 });
 
-socket.on("roundResult", ({ solution, explanation, scores, answers }) => {
+socket.on("roundResult", ({ solution, explanation, scores, answers, playersWon }) => {
     updateDisplay("results");
 
     document.getElementById("solution").innerText = solution;
     document.getElementById("explanation").innerText = explanation;
 
-    displayPlayerListResults(scores, answers);
+    displayPlayerListResults(solution, scores, answers, playersWon);
     updateHostDisplay();
 });
 

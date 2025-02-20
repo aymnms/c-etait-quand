@@ -147,7 +147,8 @@ class Game {
             solution: question.year,
             explanation: `${log.question.explanation}`,
             scores: room.getScores(),
-            answers: log.answers
+            answers: log.answers,
+            playersWon: log.perfectWinners.length ? log.perfectWinners : log.closestPlayers
         });
     }
 
