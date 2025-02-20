@@ -560,17 +560,27 @@ body {
   border: 10px dashed #7D5DBC;
 }
 
+.player-perfect {
+  outline: 4px solid #f6ff00;
+}
+
+.player-won {
+  outline: 4px solid #12c763;
+}
+
+
 /* La date proposée (ex. 1950) */
 .guessed-date {
   background-color: #2C1E37;
-  border-top-left-radius: 30px;
-  border-top-right-radius: 30px;
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
   margin-left: 10px;
   margin-right: 10px;
   width: 100%;
   font-weight: bold;
   font-size: 25px;
   margin: 0;
+  margin-top: -4px;
 }
 
 /* L'avatar dans la player-card */
