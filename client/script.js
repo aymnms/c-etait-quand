@@ -171,7 +171,7 @@ function displayPlayerListEndGame() {
     playerListElement.innerHTML = listElement;
 }
 
-function displayPlayerList() {
+function displayPlayerListWaiting() {
     let playerListElement = document.getElementById("playerListWaiting");
     let listElement = "";
     for (const player of party.players) {
@@ -186,6 +186,26 @@ function displayPlayerList() {
     playerListElement.innerHTML = listElement;
 
     document.getElementById("nbPlayer").innerText = `JOUEUR ${party.players.length}/10`;
+}
+
+function displayPlayerListResults(scores, answers) {
+    let playerCards = document.getElementById("player-cards");
+    playerCards.innerHTML = "";
+    for (let localPlayer of party.players) {
+        localPlayer.score = scores[localPlayer.name];
+        const answer = answers[localPlayer.name] ? answers[localPlayer.name] : "❌";
+        playerCards.innerHTML += `
+        <div class="player-card">
+            <p class="guessed-date">${answer}</p>
+            <img src="img/${avatars[localPlayer.avatar]}" alt="${localPlayer.name}" class="player-avatar-results">
+            <p class="player-name">${localPlayer.name}</p>
+            <p class="player-score">${scores[localPlayer.name]}</p>
+        </div>
+        `;
+    }
+    for (let i = 0; i < 10 - party.players.length; i++) {
+        playerCards.innerHTML += `<div class="player-card player player-empty-slot"></div>`;
+    }
 }
 
 function createToast(message, type = "info") {
@@ -281,7 +301,7 @@ socket.on("roomJoined", (code, players, host) => {
     party.playerHostName = host;
     updateDisplay("waiting");
     updateHostDisplay();
-    displayPlayerList();
+    displayPlayerListWaiting();
     document.getElementById("roomCode").innerText = `CODE: ${code}`;
 });
 
@@ -308,20 +328,7 @@ socket.on("roundResult", ({ solution, explanation, scores, answers }) => {
     document.getElementById("solution").innerText = solution;
     document.getElementById("explanation").innerText = explanation;
 
-    let playerCards = document.getElementById("player-cards");
-    playerCards.innerHTML = "";
-    for (let localPlayer of party.players) {
-        localPlayer.score = scores[localPlayer.name];
-        const answer = answers[localPlayer.name] ? answers[localPlayer.name] : "❌";
-        playerCards.innerHTML += `
-        <div class="player-card">
-            <p class="guessed-date">${answer}</p>
-            <img src="img/${avatars[localPlayer.avatar]}" alt="${localPlayer.name}" class="player-avatar-results">
-            <p class="player-name">${localPlayer.name}</p> 
-            <p class="player-score">${scores[localPlayer.name]}</p>
-        </div>
-        `;
-    }
+    displayPlayerListResults(scores, answers);
     updateHostDisplay();
 });
 
@@ -343,7 +350,7 @@ socket.on("playerDisconnected", (player, host) => {
             party.players.splice(party.players.indexOf(localPlayer), 1);
         }
     }
-    displayPlayerList();
+    displayPlayerListWaiting();
     if (party.playerHostName != host) {
         party.playerHostName = host;
         if (party.playerHostName === myself.name){
