@@ -3,17 +3,19 @@ const ENV = window.location.href.includes("index.html") ? "local" : window.locat
 const CONFIG = {
     local: {
         BACKEND_URL: "http://localhost:3000",
+        TITLE: ENV.toUpperCase() + " - " + document.title
     },
     preprod: {
         BACKEND_URL: "https://c-etait-quand-back-preprod.onrender.com",
+        TITLE: ENV.toUpperCase() + " - " + document.title
     },
     prod: {
         BACKEND_URL: "https://c-etait-quand-back.onrender.com",
+        TITLE: ENV.toUpperCase() + " - " + document.title
     }
 };
 
-if (ENV != "prod") document.title = ENV.toUpperCase() + " - " + document.title;
-
+document.title = CONFIG[ENV].TITLE;
 const BACKEND_URL = CONFIG[ENV].BACKEND_URL;
 
 const socket = io(BACKEND_URL);
