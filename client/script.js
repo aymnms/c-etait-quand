@@ -3,20 +3,20 @@ const ENV = window.location.href.includes("index.html") ? "local" : window.locat
 const CONFIG = {
     local: {
         BACKEND_URL: "http://localhost:3000",
+        TIMER: 10
     },
     preprod: {
         BACKEND_URL: "https://c-etait-quand-back-preprod.onrender.com",
+        TIMER: 30
     },
     prod: {
         BACKEND_URL: "https://c-etait-quand-back.onrender.com",
+        TIMER: 60
     }
 };
 
 if (ENV != "prod") document.title = ENV.toUpperCase() + " - " + document.title;
-
-const BACKEND_URL = CONFIG[ENV].BACKEND_URL;
-
-const socket = io(BACKEND_URL);
+const socket = io(CONFIG[ENV].BACKEND_URL);
 
 const avatars = [
     "Avatar1.png",
@@ -39,7 +39,7 @@ function resetParty() {
         playerHostName: "",
         players: [],
         step: "home",
-        roundTime: (ENV === "local") ? 10 : 30,
+        roundTime: CONFIG[ENV].TIMER,
         timer: 0
     }
 }

@@ -1,5 +1,6 @@
 const Player = require("./Player");
 const { getRandomQuestion, getQuestion } = require("../database");
+require("dotenv").config();
 
 class Room {
     constructor(code) {
@@ -85,7 +86,7 @@ class Room {
     getWinners() {
         let winners = [];
         for (const player of this.players.values()) {
-            if (player.score >= 5) winners.push(player.name);
+            if (player.score >= process.env.POINT_WIN) winners.push(player.name);
         }
         return winners;
     }
