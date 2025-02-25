@@ -11,7 +11,7 @@ const CONFIG = {
     },
     prod: {
         BACKEND_URL: "https://c-etait-quand-back.onrender.com",
-        TIMER: 30
+        TIMER: 60
     }
 };
 
