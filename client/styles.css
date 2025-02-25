@@ -1,0 +1,884 @@
+/* ========== RESET DE BASE ========== */
+body {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: bold;
+  padding: 0;
+  margin: 0;
+  
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #3B1D53;
+  color: hsl(0, 0%, 100%);
+}
+
+.container { 
+  display: flex;
+  width: fit-content;
+  block-size: fit-content;
+  justify-content: center;
+   
+}
+
+.logo {
+  width: 550px; 
+  height: 550px;
+  object-fit: cover;
+  margin-bottom: 50px;
+}
+
+.menubutton-container {
+  display: flex;
+  gap: 10px;
+  width: fit-content;
+  block-size: fit-content;
+}
+.play-button {
+  background-color: #9C5EEB; /* Violet plus clair */
+  color: #ffffff;
+  border: none;       /* On enlève la bordure par défaut */
+  border-radius: 40px; /* Pour arrondir légèrement les coins */
+  width: 306px;
+  height: 94px; 
+  cursor: pointer;       /* Pour avoir le curseur en forme de main */
+  font-size: 40px;     /* Taille du texte dans le bouton */
+  font-weight: bold;     /* On le veut bien visible */
+  text-transform: uppercase; /* Pour respecter le style "PLAY" */
+
+  transition: background-color 0.3s; /* Animation fluide quand on hover */
+}
+
+/* Au survol */
+.play-button:hover {
+  background-color: #AB76F5; /* Légèrement plus clair pour un feedback */
+}
+
+
+/* ======================================================================== */
+/* STYLES POUR LA PAGE "SETUP"                                              */
+/* ======================================================================== */
+
+/*
+  .page-container (ou un autre nom) servira de conteneur principal sur la 2e page.
+  Comme on utilise déjà "display:flex; justify-content:center; align-items:center; height:100vh;"
+  sur body, ce n’est pas strictement obligatoire d’en refaire un, mais c’est utile
+  si on veux gérer la largeur max, etc.
+*/
+
+.logo-watermark {
+  position: absolute;
+  top: 45px;
+  right: 45px;
+  width: 192px;
+  height: 192px; 
+}
+.setup-container {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+}
+
+/* Le bloc "carte" qui a un fond un peu plus sombre et des bords arrondis */
+.card {
+  background-color: #2C1E37;
+  border-radius: 45px;
+  width: 800px;
+  height: 800px;
+  justify-content: center;
+  align-items: center;  
+  margin: 0 auto;
+  gap: 40px;  
+}
+
+/* Le titre de la carte */
+.card-title {
+  color: #ffffff;
+  font-size: 50px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Conteneur des flèches + image avatar */
+.avatar-selection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  padding-top: 20px;
+  padding-bottom: 50px;
+}
+
+/* Boutons flèches */
+.leftarrowbtn-img{
+  width: 30px;
+  height: 30px;
+  justify-content: center;
+  margin-right: 4px;
+
+}
+
+.rightarrowbtn-img{
+  width: 30px;
+  height: 30px;
+  justify-content: center;
+  margin-left: 4px;
+
+}
+
+.avatar-nav-btn {
+  background-color:#968E9B;
+  border: none;
+  border-radius: 70px;
+  color: #FFFFFF;
+  width: 60px;
+  height: 60px;
+  outline: none;
+ 
+}
+
+.avatar-nav-btn:hover {
+  background-color: #b3abb8;
+  transition: background-color 0.2s; 
+
+}
+
+/* Image de l’avatar */
+.avatar-img {
+  width: 250px;
+  height: 250px;
+}
+
+/* Champ texte pour le surnom */
+.nickname-input{
+  background-color: #968E9B;
+  color: #ffffff;
+  width: 393px;
+  height:93px;
+  margin: 0 auto;
+
+  border: solid;
+  border-color: #FFFFFF;
+  border-width: 10px;
+  border-radius: 30px;
+  
+  font-size: 40px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.join-code-container{
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.code-input {
+  background-color: #41344B;
+  color: #FFFFFF;
+
+  width: 247px;
+  height:70px;
+
+  border: none;
+  border-radius: 20px;
+
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.nickname-input:focus, .code-input:focus {
+  outline: solid #9C5EEB;
+  outline-width: 3px;
+  outline-offset: 2px;
+}
+
+/* Bouton REJOINDRE */
+.join-button {
+  background-color: #9C5EEB;
+  color: #FFFFFF;
+  width: 247px;
+  height:70px;
+  border: none;
+  border-radius: 20px;
+  padding: 0.8rem 2rem;
+  cursor: pointer;
+  font-size: 30px;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.3s;
+}
+
+.join-button:hover {
+  background-color: #AB76F5;
+}
+
+#startGame, #next { display: none; }
+
+
+/* ======================================================================= */
+/* STYLES POUR LA PAGE "WAITING"                                           */
+/* ======================================================================= */
+
+/* Le conteneur global de la page Room */
+.room-container {
+  width: 100%;
+  box-sizing: border-box;
+  display: contents;
+}
+/* Header de la room */
+.room-header-waiting {
+  height: 638px;
+  width: 1158px;
+  align-content: end;
+  padding: 10px;
+  padding-bottom: 20px;
+  border-radius: 30px;
+  background-color: #2C1E37;  /* Même couleur que le conteneur ? ou un peu plus sombre si tu veux ? */
+  margin: 0 auto;
+  text-align: center; /* Centrer le titre "ROOM" */
+}
+
+.room-title {
+  font-size: 50px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Bloc principal : on y met un fond plus clair ? */
+.room-main-waiting {
+  background-color: #6B4CA9; 
+  border-radius: 30px;
+  height: 90.4%;
+  width: 100%; 
+  padding: 10px;
+  padding-top: 10px;
+}
+
+.player-code-container{
+  display: flex;
+  padding-top: 5px;
+  padding-bottom: 10px;
+  justify-content: flex-end;
+}
+
+.code-box {
+  display: flex;
+  background-color: #583E87;
+  border-radius: 30px;
+  padding-left: 15px;
+  padding-right: 15px;
+  justify-self:right;
+  justify-content: center;
+  align-items: center; 
+}
+
+.code-title {
+  padding-top: 8px;
+  font-size: 30px;
+  font-weight: bold;
+  text-align: right;
+}
+
+/* Titre "JOUEUR 4/14" */
+.player-count {
+
+  padding-right: 645px;
+  font-size: 40px;
+  font-weight: bold;
+  text-align: left;
+  padding-top: 10px;
+}
+
+/* La liste des joueurs : on veut une disposition horizontale */
+/*  CEST UNIQUEMENT POUR WAITING */
+.players-list {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-rows: 220px;
+  grid-gap: 10px;
+  justify-items: center;  /* centre chaque cellule horizontalement */
+  align-items: center;    /* centre verticalement */
+}
+
+/* Chaque "player" : avatar + surnom */
+.player {
+  display: flex;
+  background-color: #583E87;
+  height: 200px;
+  width: 200px;
+  border-radius: 30px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;     /* Centre le surnom sous l’avatar */
+}
+
+.player-avatar-waiting {
+  width: 125px;            /* Ajuste la taille selon ta maquette */
+  height: 125px;
+}
+
+.player-name-waiting {
+  font-size: 1.5rem;
+  font-weight: bold;    /* Ou bold, selon le style voulu */
+  margin: 0.2rem 0;
+}
+
+/* Footer : zone du bouton "JOUER" */
+.room-footer {
+  display: flex;
+  width: fit-content;
+  block-size: fit-content;
+  padding-top: 40px;
+  margin: 0 auto;
+}
+
+/* Le bouton "JOUER" */
+.room-play-button {
+  background-color: #AD72FE;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 55px;
+  height: 79px;
+  width: 230px;
+  font-size: 40px;
+  font-weight: bold;
+  text-transform: uppercase;
+
+  transition: background-color 0.3s;
+}
+
+.room-play-button:hover {
+  background-color: #AB76F5;
+}
+
+
+/*********************************************************/
+/*            STYLES POUR LA PAGE GAME                   */
+/*********************************************************/
+
+/* Conteneur principal de la page */
+.game-page {
+  width: 100%;
+  box-sizing: border-box;
+  display: contents;
+}
+
+.timer-progress {
+  position: absolute;
+  top: 67px;
+  right: 94px;
+  width: 95px;
+  height: 95px; 
+  border-radius: 50%;
+  background: conic-gradient(transparent 100%, #2C1E37 0);
+}
+
+/* ===== Le grand rectangle violet au premier plan ===== */
+.card-front {
+  height: 729px;
+  width: 1158px;
+  align-content: flex-end;
+  padding: 10px;
+  padding-bottom: 20px;
+  border-radius: 30px;
+  background-color: #2C1E37;  /* Même couleur que le conteneur ? ou un peu plus sombre si tu veux ? */
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* ===== BANDEAU NOIR EN HAUT ===== */
+.card-header {
+  text-align: center;
+  padding: 10px;
+  /* Coins arrondis du haut */
+  border-radius: 30px;
+}
+
+.card-header h1 {
+  margin: 0;
+  font-size: 50px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* ===== RECTANGLE VIOLET "INTÉRIEUR" ===== */
+.card-inner {
+  background-color: #6B4CA9;
+  padding-top: 10px;
+  border-radius: 30px;
+  height: 90%;
+  width: 100%; 
+  padding: 10px;
+}
+
+/* Sous-titre "L'IMPRIMERIE" */
+.event-title {
+  margin-bottom: 1rem;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+/* L’image au centre */
+.image-wrapper {
+  text-align: center;
+}
+
+.image-wrapper img {
+  max-width: 760px;
+  max-height: 500px;
+  border-radius: 50px;
+  border: solid #2C1E37;
+  border-width: 10px;
+  display: inline-block;
+}
+
+/* ===== BANDEAU NOIR EN BAS ===== */
+.card-footer {
+  padding: 10px;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Champ "DATE" */
+.date-input {
+  background-color: #9D8EA9; 
+  height: 93px;
+  width: 443px;
+  color: #ffffff;
+  border: 10px solid #ffffff;
+  border-radius: 30px;
+  padding: 5px 10px;
+  font-size: 40px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.date-input:focus {
+  outline: solid #9C5EEB;
+  outline-width: 3px;
+  outline-offset: 2px;
+}
+/* Bouton "VALIDER" */
+.validate-button {
+  background-color: #9C5EEB;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 55px;
+  height: 69px;
+  width: 380px;
+  justify-content: center;
+  margin-top: 20px;
+  
+  font-size: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  
+  transition: background-color 0.3s;
+}
+.validate-button:hover {
+  background-color: #AB76F5;
+}
+
+/* ===================================================================== */
+/* STYLES SPÉCIFIQUES À LA PAGE RÉSULTATS                                */
+/* (en plus de .card-front, .card-header, .card-inner, .card-footer)     */
+/* ===================================================================== */
+
+/* On peut cibler le bloc .card-inner de cette page via .results-content si besoin */
+.results-content {
+  text-align: center;
+}
+
+/* La date finale en grand (ex. 1440) */
+.final-date {
+  background-color: #2C1E37;
+  border-radius: 50px;
+  width: fit-content;
+  padding: 20px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  font-size: 50px;
+  font-weight: bold;
+
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+
+/* Le bloc encadré pour la description */
+.explanation-box {
+  height: 260px;
+  width: 990px;
+  background-color: #583E87; /* Ou autre violet plus clair */
+  border-radius: 30px;
+  padding: 10px;
+  margin: 0 auto;
+  margin-top: 10px;
+  margin-bottom: 60px;
+
+  font-size: 30px;
+  
+}
+
+/* La rangée de cartes joueurs */
+.players-row {
+  display: flex;
+  flex-wrap: wrap;          /* Permet de passer à la ligne si trop d'éléments */
+  gap: 10px;                /* Espace horizontal/vertical entre les cartes */
+  justify-content: center;  /* Centre le tout horizontalement */
+}
+
+/* Chaque "carte joueur" */
+.player-card {
+  background-color: #583E87; /* Un violet un peu différent, ajustable selon ta maquette */
+  width: 100px;              /* Ajuste la largeur selon la place voulue */
+  height: 240px;        /* Hauteur approximative ; ajuste selon la maquette */
+  border-radius: 30px;
+  text-align: center;
+  
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly; /* Espace vertical entre les éléments */
+  align-items: center;
+}
+
+/* On peut distinguer un "slot" vide */
+.player-card.empty-slot {
+  background-color: #7050B0;       /* On le rend semi-transparent */
+  /* on peut ajouter un border dashed, etc. si souhaité */
+  border: 10px dashed #7D5DBC;
+}
+
+.player-perfect {
+  outline: 4px solid #FFD700;
+}
+
+.player-won {
+  outline: 4px solid #12c763;
+}
+
+
+/* La date proposée (ex. 1950) */
+.guessed-date {
+  background-color: #2C1E37;
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
+  margin-left: 10px;
+  margin-right: 10px;
+  width: 100%;
+  font-weight: bold;
+  font-size: 25px;
+  margin: 0;
+  margin-top: -4px;
+}
+
+/* L'avatar dans la player-card */
+.player-avatar-results {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px; /* Par ex., si tu veux un avatar rond */
+}
+
+/* Le nom du joueur (ex. "Zezette") */
+.player-name-results {
+  font-size: 20px;
+  margin: 0;
+}
+
+/* Le score du joueur (ex. "5") */
+.player-score {
+  font-size: 40px;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* TOAST */
+
+#toastContainer .toast {
+  margin-bottom: 5px; /* Espace de 0.5rem sous chaque toast */
+}
+
+/* Bouton retour */
+
+.back-button {
+  position: absolute;
+  top: 45px;
+  left: 45px;
+}
+
+/* ====================== PAGE "WINNER" ========================== */
+
+/*
+  .room-container, .room-header, .room-main, .room-footer, 
+  .player, .player-avatar, .player-name, etc.
+  sont déjà définies dans ton code "WAITING" actuel.
+  
+  On va juste adapter quelques ajouts spécifiques au podium 
+  et à l'effet "cases vides en pointillé".
+*/
+
+/* Header de la room */
+.room-header-endgame {
+  height: 565px;
+  width: 1158px;
+  align-content: end;
+  padding: 10px;
+  padding-bottom: 20px;
+  border-radius: 30px;
+  background-color: #2C1E37;  /* Même couleur que le conteneur ? ou un peu plus sombre si tu veux ? */
+  margin: 0 auto;
+  text-align: center; /* Centrer le titre "ROOM" */
+}
+
+/* Bloc principal : on y met un fond plus clair ? */
+.room-main-endgame {
+  background-color: #6B4CA9; 
+  border-radius: 30px;
+  height: 89%;
+  width: 100%; 
+  padding: 10px;
+  padding-top: 10px;
+}
+
+/* La liste des gagnants (on veut une grille 2 lignes x 4 colonnes) */
+.players-list-endgame {
+  /* Pour faire une grille : 2 lignes x 4 colonnes */
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-rows: 220px;  /* ou "200px" selon ton design */
+  grid-gap: 1rem;
+  justify-items: center;  /* centre chaque cellule horizontalement */
+  align-items: center;    /* centre verticalement */
+}
+
+/* Podium : 1er, 2e, 3e => bordure de couleur */
+.player-rank {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: #ffffff; /* Or, à adapter */
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.player-first .player-rank {
+  color: #FFD700;
+}
+
+.player-second .player-rank {
+  color: #C0C0C0;
+}
+
+.player-third .player-rank {
+  color: #CD7F32;
+}
+
+/* On va devoir positionner ce rank => 
+   => le container ".player" doit être en position: relative 
+      pour que .player-rank s'affiche dedans sans tout casser.
+   => on l'ajoute plus bas 
+*/
+.player {
+  position: relative; /* pour .player-rank position:absolute */
+}
+
+/* 1er : cadre orange, p.ex. #FFA500 */
+.player-first {
+  border: 5px solid #FFD700;
+}
+
+/* 2e : cadre gris clair, p.ex. #C0C0C0 */
+.player-second {
+  border: 5px solid #C0C0C0;
+}
+
+/* 3e : cadre bronze, p.ex. #CD7F32, ou orange plus foncé */
+.player-third {
+  border: 5px solid #CD7F32;
+}
+
+/* Score (cercle noir, texte blanc) */
+.player-score-endgame {
+  font-size: 0.8rem;
+  font-weight: bold;
+  width: 35px;
+  height: 35px;
+  background-color: #1F0A33; /* noir / violet foncé */
+  color: #FFFFFF;
+  border-radius: 50%;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 auto 5px auto; /* centre horizontalement, marge en bas */
+}
+
+/* Slots vides (pointillés, plus clairs) */
+.player-empty-slot {
+  border: 3px dashed #BDA2E0; /* un violet clair/désaturé */
+  opacity: 0.5;              /* effet atténué */
+}
+
+/* .player */
+
+.player-avatar-endgame {
+  width: 125px;            /* Ajuste la taille selon ta maquette */
+  height: 125px;
+}
+
+.player-name-endgame {
+  font-size: 1.5rem;
+  font-weight: bold;    /* Ou bold, selon le style voulu */
+  margin: 0.2rem 0;
+}
+
+.player-first .player-name-endgame {
+  color: #FFD700;
+}
+
+.player-second .player-name-endgame {
+  color: #C0C0C0;
+}
+
+.player-third .player-name-endgame {
+  color: #CD7F32;
+}
+
+/* CSS ZEZE */
+
+
+body {
+  font-family: 'Quicksand', sans-serif;
+  text-align: center;
+  margin: 20px;
+  background-color: #3B1D53;
+  margin: 0;
+  padding: 0;
+}
+#game, #results, #endGame {
+  display: none;
+}
+.InfoCard {
+  width: 900px;
+  height: 730px;
+  background-color: #2C1E37;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 45px;
+  padding: 2rem;
+  text-align: center;
+}
+/* Titres */
+.InfoCard h2 {
+  font-size: 50px;
+  font-weight: 700;
+  margin-bottom: 0px;
+  line-height: 1.2;
+}
+
+/* Zone de l’avatar + flèches */
+.avatar-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.arrow-btn {
+  background: transparent;
+  border: none;
+  color: #FFFFFF;
+  font-size: 2rem;
+  padding: 0 1rem;
+  cursor: pointer;
+}
+.arrow-btn:hover {
+  color: #CCCCCC;
+}
+
+/* Avatar “dessiné” (ici simple cercle jaune) */
+.avatar {
+  width: 300px;
+  height: 300px;
+  background: transparent; 
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+input[type="text"] {
+  text-align: center;
+
+}
+::placeholder {
+  color: rgba(255, 255, 255, 0.466);
+}
+
+.player-form {
+  width: 363px;
+  height: 63px;
+  outline: 10px solid;
+  outline-color: #FFFFFF;
+  background-color: #ffffff73;
+  border: none;
+  border-radius: 20px;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 30px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.btn-join {
+  width: 270px;
+  height: 60px;
+  background-color: #AD72FE;
+  border: none;
+  color: #FFFFFF;
+  border-radius: 20px;
+  margin-left: 20px;
+  font-weight: 700;
+  font-size: 30px;
+  cursor: pointer;
+}
+.btn-join:hover {
+  background-color: #7E3EC3;
+}
+.code {
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+/* Bouton Lancer */
+.btn-launch {
+  width: 290px;
+  height: 80px;
+  background-color: #AD72FE;
+  border: none;
+  color: #FFFFFF;
+  border-radius: 20px;
+  padding: 0.5rem 2rem;
+  font-weight: 700;
+  font-size: 40px;
+  cursor: pointer;
+}
+.btn-launch:hover {
+  background-color: #7E3EC3;
+}
