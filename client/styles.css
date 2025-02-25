@@ -561,7 +561,7 @@ body {
 }
 
 .player-perfect {
-  outline: 4px solid #f6ff00;
+  outline: 4px solid #FFD700;
 }
 
 .player-won {
@@ -695,7 +695,7 @@ body {
 
 /* 1er : cadre orange, p.ex. #FFA500 */
 .player-first {
-  border: 5px solid #FFA500;
+  border: 5px solid #FFD700;
 }
 
 /* 2e : cadre gris clair, p.ex. #C0C0C0 */
