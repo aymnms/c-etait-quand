@@ -10,7 +10,7 @@
         </div>
         <div class="card-inner results-content">
         <div class="explanation-box">
-            <h2 id="solution" class="final-date"></h2>
+            <h2 id="solution" class="final-date"> </h2>
             <p id="explanation"></p>
         </div>
         <div id="player-cards" class="players-row"></div>

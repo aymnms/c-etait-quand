@@ -1,5 +1,5 @@
 <script>
-    export let nextRound;
+    // export let nextRound;
 </script>
 
 <div id="game" class="game-page">

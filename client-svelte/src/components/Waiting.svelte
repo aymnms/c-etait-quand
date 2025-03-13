@@ -5,7 +5,7 @@
   
 <div id="waiting" class="room-container">
     <img src="img/CetaitQuandLogo.png" alt="Logo C'était quand" class="logo-watermark">
-    <button class="avatar-nav-btn back-button" on:click={() => back('waiting')}><img src="img/ArrowButtonLeft.png" class="leftarrowbtn-img"/></button>
+    <button class="avatar-nav-btn back-button" on:click={() => back('waiting')}><img src="img/ArrowButtonLeft.png" class="leftarrowbtn-img" alt="back button"/></button>
     <div class="room-header-waiting">
         <h1 class="room-title">ROOM</h1>
         <main class="room-main-waiting">

@@ -1,4 +1,7 @@
 <script>
+    import 'bootstrap/dist/css/bootstrap.min.css';
+    import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+    
     import Home from './components/Home.svelte';
     import Setup from './components/Setup.svelte';
     import Waiting from './components/Waiting.svelte';
@@ -53,39 +56,9 @@
     }
     
     function goToSetupPage(isHost) {
-        if (isHost) {
-            document.getElementById("setup-code").style.display = "none";
-            document.getElementById("setup-next").innerText = "CRÉER";
-        } else {
-            document.getElementById("setup-code").style.display = "";
-            document.getElementById("setup-next").innerText = "REJOINDRE";
-        }
+        setupCreatorMod = isHost;
         updateDisplay("setup");
     }
-    
-    // function changeAvatar(direction) {
-    //     let avatarElement = document.getElementById("setup-avatar");
-    
-    //     let index = myself.indexAvatar + direction;
-    //     if (index >= avatars.length) index = 0;
-    //     else if (index < 0) index = avatars.length - 1;
-    
-        
-    //     myself.indexAvatar = index;
-    //     console.log(myself.indexAvatar);
-    //     avatarElement.src = "img/" + avatars[myself.indexAvatar];
-    // }
-    
-    // function joinGame() {
-    //     myself.name = document.getElementById("setup-playerInput").value.trim();
-    //     if (!myself.name) return createToast("Entrez un nom de joueur", "error");
-    //     roomCodeElement = document.getElementById("setup-code");
-    //     if (roomCodeElement.style.display !== "none") {
-    //         party.roomCode = roomCodeElement.value.trim();
-    //         if (!party.roomCode) return createToast("Entrez un code de room", "error");
-    //     }
-    //     socket.emit("joinGame", { playerName: myself.name, indexAvatar: myself.indexAvatar, roomCode: party.roomCode });
-    // }
     
     // function displayQuestion(question) {
     //     document.getElementById("question").innerText = `${question.invention}`;
@@ -121,25 +94,9 @@
     //     }
     // }
     
-    // function updateDisplay(step) {
-    //     party.step = step;
-    
-    //     let displays = {
-    //         "home": "none",
-    //         "setup": "none",
-    //         "waiting": "none",
-    //         "game": "none",
-    //         "spinner": "none",
-    //         "results": "none",
-    //         "endGame": "none",
-    //     }
-    
-    //     displays[step] = "block";
-    
-    //     for (const key in displays) {
-    //         document.getElementById(`${key}`).style.display = displays[key];
-    //     }
-    // }
+    function updateDisplay(step) {
+        party.step = step;
+    }
     
     // function displayPlayerListEndGame() {
     //     let sortPlayerList = party.players;
@@ -225,73 +182,73 @@
     //     }
     // }
     
-    // function createToast(message, type = "info") {
+    function createToast(message, type = "info") {
     
-    //     colorClass = type === 'success' ? 'text-bg-success' : type === 'error' ? 'text-bg-danger' : 'text-bg-secondary';
+        let colorClass = type === 'success' ? 'text-bg-success' : type === 'error' ? 'text-bg-danger' : 'text-bg-secondary';
     
-    //     // colorClasssss = [
-    //     //     'text-bg-primary',
-    //     //     'text-bg-danger',
-    //     //     'text-bg-info',
-    //     //     'text-bg-success',
-    //     //     'text-bg-secondary',
-    //     // ];
+        // colorClasssss = [
+        //     'text-bg-primary',
+        //     'text-bg-danger',
+        //     'text-bg-info',
+        //     'text-bg-success',
+        //     'text-bg-secondary',
+        // ];
     
-    //     // 1) Crée l'élément principal
-    //     const toastEl = document.createElement('div');
+        // 1) Crée l'élément principal
+        const toastEl = document.createElement('div');
         
-    //     // 2) Les classes Bootstrap nécessaires
-    //     toastEl.classList.add('toast', 'align-items-center', colorClass, 'border-0', 'fade');
+        // 2) Les classes Bootstrap nécessaires
+        toastEl.classList.add('toast', 'align-items-center', colorClass, 'border-0', 'fade');
       
-    //     // 3) Attributs
-    //     toastEl.setAttribute('role', 'alert');
-    //     toastEl.setAttribute('aria-live', 'assertive');
-    //     toastEl.setAttribute('aria-atomic', 'true');
-    //     // Durée avant auto-hide (ms)
-    //     toastEl.dataset.bsAutohide = 'true';
-    //     toastEl.dataset.bsDelay = '5000';
+        // 3) Attributs
+        toastEl.setAttribute('role', 'alert');
+        toastEl.setAttribute('aria-live', 'assertive');
+        toastEl.setAttribute('aria-atomic', 'true');
+        // Durée avant auto-hide (ms)
+        toastEl.dataset.bsAutohide = 'true';
+        toastEl.dataset.bsDelay = '5000';
     
-    //     // 4) InnerHTML : structure du toast
-    //     toastEl.innerHTML = `
-    //       <div class="d-flex">
-    //         <div class="toast-body">
-    //           ${message}
-    //         </div>
-    //         <button
-    //           type="button"
-    //           class="btn-close btn-close-white me-2 m-auto"
-    //           data-bs-dismiss="toast"
-    //           aria-label="Close"
-    //         ></button>
-    //       </div>
-    //     `;
+        // 4) InnerHTML : structure du toast
+        toastEl.innerHTML = `
+          <div class="d-flex">
+            <div class="toast-body">
+              ${message}
+            </div>
+            <button
+              type="button"
+              class="btn-close btn-close-white me-2 m-auto"
+              data-bs-dismiss="toast"
+              aria-label="Close"
+            ></button>
+          </div>
+        `;
       
-    //     // 5) Place-le dans le conteneur
-    //     const toastContainer = document.getElementById('toastContainer');
-    //     toastContainer.appendChild(toastEl);
+        // 5) Place-le dans le conteneur
+        const toastContainer = document.getElementById('toastContainer');
+        toastContainer.appendChild(toastEl);
         
-    //     // 6) Initialise le toast
-    //     const bsToast = new bootstrap.Toast(toastEl);
+        // 6) Initialise le toast
+        const bsToast = new bootstrap.Toast(toastEl);
         
-    //     // 7) Affiche-le
-    //     bsToast.show();
-    // }
+        // 7) Affiche-le
+        bsToast.show();
+    }
     
-    // function back(from) {
-    //     if (from === "setup") {
-    //         updateDisplay("home");
-    //     }
-    //     else if (from === "waiting") {
-    //         // déconnecter le joueur
-    //         socket.emit("leave");
-    //         resetParty();
-    //         // goTo setup
-    //         updateDisplay("setup");
-    //     }
-    //     else if (from === "endGame") {
-    //         updateDisplay("home");
-    //     }
-    // }
+    function back(from) {
+        if (from === "setup") {
+            updateDisplay("home");
+        }
+        else if (from === "waiting") {
+            // déconnecter le joueur
+            socket.emit("leave");
+            resetParty();
+            // goTo setup
+            updateDisplay("setup");
+        }
+        else if (from === "endGame") {
+            updateDisplay("home");
+        }
+    }
     
     // function updateTimer(timeLeft) {
     //     const timerElement = document.getElementById("timer");
@@ -379,6 +336,8 @@
     
     // updateDisplay("home");
 
+    let setupCreatorMod = false;
+
 </script>
 
 <main>
@@ -386,9 +345,9 @@
         <Home {goToSetupPage} />
     {/if}
     {#if party.step === 'setup'}
-        <Setup {back} {changeAvatar} {joinGame} />
+        <Setup {back} {myself} {avatars} {setupCreatorMod} {createToast}/>
     {/if}
-    {#if party.step === 'waiting'}
+    <!-- {#if party.step === 'waiting'}
         <Waiting {back} {nextRound} />
     {/if}
     {#if party.step === 'game'}
@@ -399,7 +358,7 @@
     {/if}
     {#if party.step === 'endGame'}
         <EndGame {back} />
-    {/if}
+    {/if} -->
 </main>
 
 <style>
