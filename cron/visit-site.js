@@ -2,7 +2,7 @@
 const { chromium } = require('playwright');
 
 (async () => {
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch();
   const page = await browser.newPage();
   await page.goto('https://cetaitquand.fr');
   await page.getByRole('button', { name: 'CRÉER' }).click();
