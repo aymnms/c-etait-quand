@@ -3,11 +3,11 @@ const ENV = window.location.href.includes("index.html") ? "local" : window.locat
 const CONFIG = {
     local: {
         BACKEND_URL: "http://localhost:3000",
-        TIMER: 10
+        TIMER: 7
     },
     preprod: {
         BACKEND_URL: "https://c-etait-quand-back-preprod.onrender.com",
-        TIMER: 30
+        TIMER: 7
     },
     prod: {
         BACKEND_URL: "https://c-etait-quand-back.onrender.com",
