@@ -43,7 +43,7 @@
     <a href="https://github.com/aymnms/c-etait-quand"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/aymnms/c-etait-quand">Play</a>
+    <a href="https://cetaitquand.fr">Play</a>
     &middot;
     <a href="https://github.com/aymnms/c-etait-quand/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     &middot;
